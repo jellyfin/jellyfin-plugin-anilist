@@ -61,10 +61,9 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// </summary>
         /// <param name="language"></param>
         /// <returns></returns>
-        public string GetPreferredTitle(string language)
+        public string GetPreferredTitle(TitlePreferenceType preference, string language)
         {
-            PluginConfiguration config = Plugin.Instance.Configuration;
-            if (config.TitlePreference == TitlePreferenceType.Localized)
+            if (preference == TitlePreferenceType.Localized)
             {
                 if (language == "en")
                 {
@@ -75,7 +74,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     return this.title.native;
                 }
             }
-            if (config.TitlePreference == TitlePreferenceType.Japanese)
+            if (preference == TitlePreferenceType.Japanese)
             {
                 return this.title.native;
             }
@@ -111,9 +110,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         public RemoteSearchResult ToSearchResult()
         {
+            PluginConfiguration config = Plugin.Instance.Configuration;
             return new RemoteSearchResult
             {
-                Name = this.GetPreferredTitle("en"),
+                Name = this.GetPreferredTitle(config.TitlePreference, "en"),
                 ProductionYear = this.startDate.year,
                 PremiereDate = this.GetStartDate(),
                 ImageUrl = this.GetImageUrl(),
@@ -224,9 +224,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         public Series ToSeries()
         {
+            PluginConfiguration config = Plugin.Instance.Configuration;
             var result = new Series {
-                Name = this.GetPreferredTitle("en"),
-                OriginalTitle = this.title.native,
+                Name = this.GetPreferredTitle(config.TitlePreference, "en"),
+                OriginalTitle = this.GetPreferredTitle(config.OriginalTitlePreference, "en"),
                 Overview = this.description,
                 ProductionYear = this.startDate.year,
                 PremiereDate = this.GetStartDate(),
@@ -257,9 +258,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         public Movie ToMovie()
         {
+            PluginConfiguration config = Plugin.Instance.Configuration;
             return new Movie {
-                Name = this.GetPreferredTitle("en"),
-                OriginalTitle = this.title.native,
+                Name = this.GetPreferredTitle(config.TitlePreference, "en"),
+                OriginalTitle = this.GetPreferredTitle(config.OriginalTitlePreference, "en"),
                 Overview = this.description,
                 ProductionYear = this.startDate.year,
                 PremiereDate = this.GetStartDate(),

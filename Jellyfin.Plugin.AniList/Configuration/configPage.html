@@ -18,6 +18,14 @@
                                 <option id="optLanguageJapaneseRomaji" value="JapaneseRomaji">Romaji</option>
                             </select>
                         </div>
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="originalTitleLanguage">Original Title Language</label>
+                            <select is="emby-select" id="originalTitleLanguage" name="originalTitleLanguage" class="emby-select-withcolor emby-select">
+                                <option id="optLanguageLocalized" value="Localized">Localized</option>
+                                <option id="optLanguageJapanese" value="Japanese">Japanese</option>
+                                <option id="optLanguageJapaneseRomaji" value="JapaneseRomaji">Romaji</option>
+                            </select>
+                        </div>
                         <div class="inputContainer">
                             <label class="inputeLabel inputLabelUnfocused" for="chkMaxGenres">Max Genres</label>
                             <input id="chkMaxGenres" name="chkMaxGenres" type="number" is="emby-input" min="0" />
@@ -78,6 +86,7 @@
 
                         ApiClient.getPluginConfiguration(AniListConfigurationPage.pluginUniqueId).then(function (config) {
                             document.getElementById('titleLanguage').value = config.TitlePreference;
+                            document.getElementById('originalTitleLanguage').value = config.OriginalTitlePreference;
                             document.getElementById('chkMaxGenres').value = config.MaxGenres;
                             document.getElementById('chkTitleCaseGenres').checked = config.TitleCaseGenres;
                             document.getElementById('chkTidyGenres').checked = config.TidyGenreList;
@@ -95,6 +104,7 @@
 
                         ApiClient.getPluginConfiguration(AniListConfigurationPage.pluginUniqueId).then(function (config) {
                             config.TitlePreference = document.getElementById('titleLanguage').value;
+                            config.OriginalTitlePreference = document.getElementById('originalTitleLanguage').value;
                             config.MaxGenres = document.getElementById('chkMaxGenres').value;
                             config.TitleCaseGenres = document.getElementById('chkTitleCaseGenres').checked;
                             config.TidyGenreList = document.getElementById('chkTidyGenres').checked;
