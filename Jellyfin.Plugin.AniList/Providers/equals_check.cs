@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Jellyfin.Plugin.AniList.Providers.AniDB.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.AniList.Providers
@@ -93,8 +92,6 @@ namespace Jellyfin.Plugin.AniList.Providers
             {
                 if (await Simple_compare(a, b, cancellationToken))
                     return true;
-                if (await Fast_xml_search(a, b, cancellationToken))
-                    return true;
 
                 return false;
             }
@@ -150,157 +147,6 @@ namespace Jellyfin.Plugin.AniList.Providers
                 x++;
             }
             return "";
-        }
-
-        /// <summary>
-        ///Return true if a and b match return false if not
-        ///It loads the titles.xml on exceptions
-        /// </summary>
-        private async static Task<bool> Fast_xml_search(string a, string b, CancellationToken cancellationToken, bool return_AniDBid = false, bool retry = false)
-        {
-            //Get AID aid=\"([s\S].*)\">
-            try
-            {
-                List<string> pre_aid = new List<string>();
-                string xml = File.ReadAllText(Get_anidb_xml_file());
-                int x = 0;
-                string s1 = "-";
-                string s2 = "-";
-                while (!string.IsNullOrEmpty(s1) && !string.IsNullOrEmpty(s2))
-                {
-                    s1 = await One_line_regex(new Regex("<anime aid=" + "\"" + @"(\d+)" + "\"" + @">(?>[^<>]+|<(?!\/anime>)[^<>]*>)*?" + Regex.Escape(await Half_string(a, cancellationToken,4))), xml, cancellationToken,1, x);
-                    if (s1 != "")
-                    {
-                        pre_aid.Add(s1);
-                    }
-                    s2 = await One_line_regex(new Regex("<anime aid=" + "\"" + @"(\d+)" + "\"" + @">(?>[^<>]+|<(?!\/anime>)[^<>]*>)*?" + Regex.Escape(await Half_string(b, cancellationToken,4))), xml, cancellationToken, 1, x);
-                    if (s1 != "")
-                    {
-                        if (s1 != s2)
-                        {
-                            pre_aid.Add(s2);
-                        }
-                    }
-                    x++;
-                }
-                foreach (string _aid in pre_aid)
-                {
-                    XElement doc = await Task.Run(async () => XElement.Parse("<?xml version=\"1.0\" encoding=\"UTF - 8\"?>" + "<animetitles>" + await One_line_regex(await Task.Run(() => new Regex("<anime aid=\"" + _aid + "\">" + @"(?s)(.*?)<\/anime>"), cancellationToken), xml, cancellationToken, 0) + "</animetitles>"), cancellationToken);
-                    var a_ = from page in doc.Elements("anime")
-                             where _aid == page.Attribute("aid").Value
-                             select page;
-                    if (await Simple_compare( a_.Elements("title"), b, cancellationToken) && await Simple_compare(a_.Elements("title"), a, cancellationToken))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            catch (Exception)
-            {
-                if (retry)
-                {
-                    return false;
-                }
-                else
-                {
-                    await Task.Run(() => AniDbTitleDownloader.Load_static(cancellationToken), cancellationToken);
-                    return await Fast_xml_search(a, b, cancellationToken, false, true);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Return the AniDB ID if a and b match
-        /// </summary>
-        public async static Task<string> Fast_xml_search(string a, string b, CancellationToken cancellationToken, bool return_AniDBid, int x_ = 0)
-        {
-            //Get AID aid=\"([s\S].*)\">
-            try
-            {
-                List<string> pre_aid = new List<string>();
-                string xml = File.ReadAllText(Get_anidb_xml_file());
-                int x = 0;
-                string s1 = "-";
-                string s2 = "-";
-                while (!string.IsNullOrEmpty(s1) && !string.IsNullOrEmpty(s2))
-                {
-                    s1 = await One_line_regex(new Regex("<anime aid=" + "\"" + @"(\d+)" + "\"" + @">(?>[^<>]+|<(?!\/anime>)[^<>]*>)*?" + Regex.Escape(await Half_string(a, cancellationToken, 4))), xml, cancellationToken, 1, x);
-                    if (s1 != "")
-                    {
-                        pre_aid.Add(s1);
-                    }
-                    s2 = await One_line_regex(new Regex("<anime aid=" + "\"" + @"(\d+)" + "\"" + @">(?>[^<>]+|<(?!\/anime>)[^<>]*>)*?" + Regex.Escape(await Half_string(b, cancellationToken, 4))), xml, cancellationToken, 1, x);
-                    if (s1 != "")
-                    {
-                        if (s1 != s2)
-                        {
-                            pre_aid.Add(s2);
-                        }
-                    }
-                    x++;
-                }
-                if (pre_aid.Count == 1)
-                {
-                    if (!string.IsNullOrEmpty(pre_aid[0]))
-                    {
-                        return pre_aid[0];
-                    }
-                }
-                int biggestcount = 0;
-                string cache_aid="";
-                if (a == b)
-                {
-                    foreach (string _aid in pre_aid)
-                    {
-                       string result= await One_line_regex(new Regex(@"<anime aid=" + "\"" + _aid + "\"" + @"((?s).*?)<\/anime>"), xml, cancellationToken);
-                       int count = (result.Length - result.Replace(a, "").Length)/a.Length;
-                       if(biggestcount< count)
-                       {
-                            biggestcount = count;
-                            cache_aid =_aid;
-                       }
-                    }
-                    if (!string.IsNullOrEmpty(cache_aid))
-                    {
-                        return cache_aid;
-                    }
-                }
-                foreach (string _aid in pre_aid)
-                {
-                    XElement doc = XElement.Parse("<?xml version=\"1.0\" encoding=\"UTF - 8\"?>" + "<animetitles>" +await One_line_regex(new Regex("<anime aid=\"" + _aid + "\">" + @"(?s)(.*?)<\/anime>"), xml, cancellationToken,0, 0) + "</animetitles>");
-                    var a_ = from page in doc.Elements("anime")
-                             where _aid == page.Attribute("aid").Value
-                             select page;
-
-                    if (await Simple_compare(a_.Elements("title"), b, cancellationToken) && await Simple_compare(a_.Elements("title"), a, cancellationToken))
-                    {
-                        return _aid;
-                    }
-                }
-                return "";
-            }
-            catch (Exception)
-            {
-                if (x_ == 1)
-                {
-                    return "";
-                }
-                else
-                {
-                    await Task.Run(() => AniDbTitleDownloader.Load_static(cancellationToken), cancellationToken);
-                    return await Fast_xml_search(a, b, cancellationToken, true, 1);
-                }
-            }
-        }
-
-        /// <summary>
-        /// get file Path from anidb xml file
-        /// </summary>
-        /// <returns></returns>
-        private static string Get_anidb_xml_file()
-        {
-            return AniDbTitleDownloader.TitlesFilePath_;
         }
 
         /// <summary>
