@@ -1,16 +1,15 @@
 ---
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
-version: "11.0.0.0"
+version: "1.0.0.0"
 targetAbi: "10.7.0.0"
 framework: "net5.0"
 owner: "jellyfin"
-overview: "Manage your anime from Jellyfin"
+overview: "AniList metadata provider"
 description: >
-  Manage your anime in Jellyfin. This plugin supports several different metadata providers
-  and options for organizing your collection.
+  AniList metadata provider
 category: "Metadata"
 artifacts:
 - "Jellyfin.Plugin.AniList.dll"
 changelog: >
-  changelog
+  - Split out from the Anime plugin
