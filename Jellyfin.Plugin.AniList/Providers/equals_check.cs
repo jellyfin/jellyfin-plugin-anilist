@@ -6,10 +6,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Jellyfin.Plugin.Anime.Providers.AniDB.Identity;
+using Jellyfin.Plugin.AniList.Providers.AniDB.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.Anime.Providers
+namespace Jellyfin.Plugin.AniList.Providers
 {
     internal class Equals_check
     {
@@ -100,7 +100,7 @@ namespace Jellyfin.Plugin.Anime.Providers
             }
             return false;
         }
-    
+
         /// <summary>
         /// Cut p(%) away from the string
         /// </summary>
@@ -272,7 +272,7 @@ namespace Jellyfin.Plugin.Anime.Providers
                     var a_ = from page in doc.Elements("anime")
                              where _aid == page.Attribute("aid").Value
                              select page;
-                    
+
                     if (await Simple_compare(a_.Elements("title"), b, cancellationToken) && await Simple_compare(a_.Elements("title"), a, cancellationToken))
                     {
                         return _aid;

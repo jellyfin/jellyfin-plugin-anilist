@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Jellyfin.Plugin.Anime.Configuration;
-using Jellyfin.Plugin.Anime.Providers.AniDB.Identity;
+using Jellyfin.Plugin.AniList.Configuration;
+using Jellyfin.Plugin.AniList.Providers.AniDB.Identity;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Common.Net;
@@ -11,7 +11,7 @@ using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.Anime
+namespace Jellyfin.Plugin.AniList
 {
     public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     {

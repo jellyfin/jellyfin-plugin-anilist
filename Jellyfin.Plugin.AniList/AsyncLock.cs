@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Jellyfin.Plugin.Anime
+namespace Jellyfin.Plugin.AniList
 {
     public class AsyncSemaphore
     {

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Jellyfin.Plugin.Anime</RootNamespace>
+    <RootNamespace>Jellyfin.Plugin.AniList</RootNamespace>
     <AssemblyVersion>11.0.0.0</AssemblyVersion>
     <FileVersion>11.0.0.0</FileVersion>
   </PropertyGroup>

@@ -5,12 +5,12 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.Anime.Configuration;
+using Jellyfin.Plugin.AniList.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 
-namespace Jellyfin.Plugin.Anime.Providers.AniList
+namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     /// <summary>
     /// Based on the new API from AniList

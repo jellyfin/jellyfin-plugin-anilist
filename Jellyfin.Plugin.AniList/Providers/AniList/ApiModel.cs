@@ -6,12 +6,12 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Entities.Movies;
-using Jellyfin.Plugin.Anime.Configuration;
+using Jellyfin.Plugin.AniList.Configuration;
 
-namespace Jellyfin.Plugin.Anime.Providers.AniList
+namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     using System.Collections.Generic;
-    
+
     public class Title
     {
         public string romaji { get; set; }

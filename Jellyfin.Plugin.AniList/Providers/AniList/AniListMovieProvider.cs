@@ -16,7 +16,7 @@ using MediaBrowser.Model.Serialization;
 using Microsoft.Extensions.Logging;
 
 //API v2
-namespace Jellyfin.Plugin.Anime.Providers.AniList
+namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     public class AniListMovieProvider : IRemoteMetadataProvider<Movie, MovieInfo>, IHasOrder
     {

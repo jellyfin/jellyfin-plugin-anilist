@@ -4,7 +4,7 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 
-namespace Jellyfin.Plugin.Anime.Providers.AniList
+namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     public class AniListExternalId : IExternalId
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Jellyfin.Plugin.Anime
+namespace Jellyfin.Plugin.AniList
 {
     /// <summary>
     /// The RateLimiter class attempts to regulate the rate at which an event occurs, by delaying

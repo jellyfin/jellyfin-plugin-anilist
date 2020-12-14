@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.Anime", "Jellyfin.Plugin.Anime\Jellyfin.Plugin.Anime.csproj", "{1363456E-55A2-4FC5-872D-97923FCD34F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.AniList", "Jellyfin.Plugin.AniList\Jellyfin.Plugin.AniList.csproj", "{1363456E-55A2-4FC5-872D-97923FCD34F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,6 +11,6 @@ description: >
   and options for organizing your collection.
 category: "Metadata"
 artifacts:
-- "Jellyfin.Plugin.Anime.dll"
+- "Jellyfin.Plugin.AniList.dll"
 changelog: >
   changelog

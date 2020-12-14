@@ -1,4 +1,4 @@
-namespace Jellyfin.Plugin.Anime
+namespace Jellyfin.Plugin.AniList
 {
     public static class Constants
     {
