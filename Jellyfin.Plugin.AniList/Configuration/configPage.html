@@ -3,13 +3,13 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>Anime</title>
+    <title>AniList</title>
 </head>
 <body>
-        <div id="animeConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
+        <div id="aniListConfigurationPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
             <div data-role="content">
                 <div class="content-primary">
-                    <form id="animeConfigurationForm">
+                    <form id="aniListConfigurationForm">
                         <div class="selectContainer">
                             <label class="selectLabel" for="titleLanguage">Title Language</label>
                             <select is="emby-select" id="titleLanguage" name="titleLanguage" class="emby-select-withcolor emby-select">
@@ -64,13 +64,13 @@
             </div>
 
             <script type="text/javascript">
-                var AnimeConfigurationPage = {
+                var AniListConfigurationPage = {
                     pluginUniqueId: "1bd22884-44be-40f3-ad95-fc4a7834ba2c",
 
                     loadConfiguration: function () {
                         Dashboard.showLoadingMsg();
 
-                        ApiClient.getPluginConfiguration(AnimeConfigurationPage.pluginUniqueId).then(function (config) {
+                        ApiClient.getPluginConfiguration(AniListConfigurationPage.pluginUniqueId).then(function (config) {
                             document.getElementById('titleLanguage').value = config.TitlePreference;
                             document.getElementById('chkMaxGenres').value = config.MaxGenres;
                             document.getElementById('chkTitleCaseGenres').checked = config.TitleCaseGenres;
@@ -86,7 +86,7 @@
                     saveConfiguration: function () {
                         Dashboard.showLoadingMsg();
 
-                        ApiClient.getPluginConfiguration(AnimeConfigurationPage.pluginUniqueId).then(function (config) {
+                        ApiClient.getPluginConfiguration(AniListConfigurationPage.pluginUniqueId).then(function (config) {
                             config.TitlePreference = document.getElementById('titleLanguage').value;
                             config.MaxGenres = document.getElementById('chkMaxGenres').value;
                             config.TitleCaseGenres = document.getElementById('chkTitleCaseGenres').checked;
@@ -95,20 +95,20 @@
                             config.AniDbRateLimit = document.getElementById('chkAniDbRateLimit').value;
                             config.AniDbReplaceGraves = document.getElementById('chkAniDbReplaceGraves').checked;
 
-                            ApiClient.updatePluginConfiguration(AnimeConfigurationPage.pluginUniqueId, config).then(function (result) {
+                            ApiClient.updatePluginConfiguration(AniListConfigurationPage.pluginUniqueId, config).then(function (result) {
                                 Dashboard.processPluginConfigurationUpdateResult(result);
                             });
                         });
                     },
                 };
 
-                document.getElementById('animeConfigurationPage').addEventListener('pageshow', function () {
-                    AnimeConfigurationPage.loadConfiguration();
+                document.getElementById('aniListConfigurationPage').addEventListener('pageshow', function () {
+                    AniListConfigurationPage.loadConfiguration();
                 });
 
-                document.getElementById('animeConfigurationForm').addEventListener('submit', function (e) {
+                document.getElementById('aniListConfigurationForm').addEventListener('submit', function (e) {
                     e.preventDefault();
-                    AnimeConfigurationPage.saveConfiguration();
+                    AniListConfigurationPage.saveConfiguration();
                 });
             </script>
         </div>

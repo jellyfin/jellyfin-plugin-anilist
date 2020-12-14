@@ -1,5 +1,5 @@
 ---
-name: "Anime"
+name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 version: "11.0.0.0"
 targetAbi: "10.7.0.0"
