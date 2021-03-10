@@ -1,7 +1,7 @@
 ---
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
-version: "1.0.0.0"
+version: "2.0.0.0"
 targetAbi: "10.7.0.0"
 framework: "net5.0"
 owner: "jellyfin"
@@ -13,3 +13,4 @@ artifacts:
 - "Jellyfin.Plugin.AniList.dll"
 changelog: >
   - Split out from the Anime plugin
+  - Unpin patch version of DependencyInjection
