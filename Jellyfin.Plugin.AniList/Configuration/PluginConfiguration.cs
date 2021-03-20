@@ -36,6 +36,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
             AniDbRateLimit = 2000;
             AniDbReplaceGraves = true;
+            AniListShowSpoilerTags = true;
         }
 
         public TitlePreferenceType TitlePreference { get; set; }
@@ -51,5 +52,6 @@ namespace Jellyfin.Plugin.AniList.Configuration
         public int AniDbRateLimit { get; set; }
 
         public bool AniDbReplaceGraves { get; set; }
+        public bool AniListShowSpoilerTags { get; set; }
     }
 }

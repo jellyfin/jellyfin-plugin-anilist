@@ -54,6 +54,12 @@
                                 <span>AniDB Replace Grave Characters</span>
                             </label>
                         </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input id="chkAniListShowSpoilerTags" name="chkAniListShowSpoilerTags" type="checkbox" is="emby-checkbox" />
+                                <span>Display Tags that are marked as spoilers</span>
+                            </label>
+                        </div>
                         <div>
                             <button is="emby-button" type="submit" class="raised button-submit block emby-button">
                                 <span>Save</span>
@@ -78,6 +84,7 @@
                             document.getElementById('animeDefaultGenre').value = config.AnimeDefaultGenre;
                             document.getElementById('chkAniDbRateLimit').value = config.AniDbRateLimit;
                             document.getElementById('chkAniDbReplaceGraves').checked = config.AniDbReplaceGraves;
+                            document.getElementById('chkAniListShowSpoilerTags').checked = config.AniListShowSpoilerTags;
 
                             Dashboard.hideLoadingMsg();
                         });
@@ -94,6 +101,7 @@
                             config.AnimeDefaultGenre = document.getElementById('animeDefaultGenre').value;
                             config.AniDbRateLimit = document.getElementById('chkAniDbRateLimit').value;
                             config.AniDbReplaceGraves = document.getElementById('chkAniDbReplaceGraves').checked;
+                            config.AniListShowSpoilerTags = document.getElementById('chkAniListShowSpoilerTags').checked;
 
                             ApiClient.updatePluginConfiguration(AniListConfigurationPage.pluginUniqueId, config).then(function (result) {
                                 Dashboard.processPluginConfigurationUpdateResult(result);
