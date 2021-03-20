@@ -335,6 +335,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public string name { get; set; }
         public string description { get; set; }
         public string category { get; set; }
+        public bool isMediaSpoiler { get; set; }
     }
 
     public class Studio
