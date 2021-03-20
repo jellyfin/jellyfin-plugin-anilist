@@ -213,9 +213,11 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         public List<string> GetTagNames()
         {
+            PluginConfiguration config = Plugin.Instance.Configuration;
             List<string> results = new List<string>();
             foreach (Tag tag in this.tags)
             {
+                if (!config.AniListShowSpoilerTags && tag.isMediaSpoiler) continue;
                 results.Add(tag.name);
             }
             return results;
