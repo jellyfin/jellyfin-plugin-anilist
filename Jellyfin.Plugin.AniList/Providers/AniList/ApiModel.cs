@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Entities;
@@ -213,12 +214,8 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         public List<string> GetTagNames()
         {
-            List<string> results = new List<string>();
-            foreach (Tag tag in this.tags)
-            {
-                results.Add(tag.name);
-            }
-            return results;
+            PluginConfiguration config = Plugin.Instance.Configuration;
+            return (from tag in this.tags where config.AniListShowSpoilerTags || !tag.isMediaSpoiler select tag.name).ToList();
         }
 
         /// <summary>
@@ -335,6 +332,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public string name { get; set; }
         public string description { get; set; }
         public string category { get; set; }
+        public bool isMediaSpoiler { get; set; }
     }
 
     public class Studio

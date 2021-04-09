@@ -87,6 +87,7 @@ query($id: Int!, $type: MediaType) {
       id
       name
       category
+      isMediaSpoiler
     }
     nextAiringEpisode {
       airingAt
