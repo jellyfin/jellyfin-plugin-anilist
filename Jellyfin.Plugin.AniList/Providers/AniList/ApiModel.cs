@@ -229,6 +229,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             var result = new Series {
                 Name = this.GetPreferredTitle("en"),
+                OriginalTitle = this.title.native,
                 Overview = this.description,
                 ProductionYear = this.startDate.year,
                 PremiereDate = this.GetStartDate(),
@@ -240,7 +241,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 Studios = this.GetStudioNames().ToArray(),
                 ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
             };
-
+            
             if (this.status == "FINISHED" || this.status == "CANCELLED")
             {
                 result.Status = SeriesStatus.Ended;
@@ -261,6 +262,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             return new Movie {
                 Name = this.GetPreferredTitle("en"),
+                OriginalTitle = this.title.native,
                 Overview = this.description,
                 ProductionYear = this.startDate.year,
                 PremiereDate = this.GetStartDate(),
