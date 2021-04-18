@@ -26,6 +26,12 @@
                                 <option id="optLanguageJapaneseRomaji" value="JapaneseRomaji">Romaji</option>
                             </select>
                         </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input id="chkFilterPeopleByTitlePreference" name="chkFilterPeopleByTitlePreference" type="checkbox" is="emby-checkbox" />
+                                <span>Filter people by title preference</span>
+                            </label>
+                        </div>
                         <div class="inputContainer">
                             <label class="inputeLabel inputLabelUnfocused" for="chkMaxGenres">Max Genres</label>
                             <input id="chkMaxGenres" name="chkMaxGenres" type="number" is="emby-input" min="0" />
@@ -87,6 +93,7 @@
                         ApiClient.getPluginConfiguration(AniListConfigurationPage.pluginUniqueId).then(function (config) {
                             document.getElementById('titleLanguage').value = config.TitlePreference;
                             document.getElementById('originalTitleLanguage').value = config.OriginalTitlePreference;
+                            document.getElementById('chkFilterPeopleByTitlePreference').checked = config.FilterPeopleByTitlePreference;
                             document.getElementById('chkMaxGenres').value = config.MaxGenres;
                             document.getElementById('chkTitleCaseGenres').checked = config.TitleCaseGenres;
                             document.getElementById('chkTidyGenres').checked = config.TidyGenreList;
@@ -105,6 +112,7 @@
                         ApiClient.getPluginConfiguration(AniListConfigurationPage.pluginUniqueId).then(function (config) {
                             config.TitlePreference = document.getElementById('titleLanguage').value;
                             config.OriginalTitlePreference = document.getElementById('originalTitleLanguage').value;
+                            config.FilterPeopleByTitlePreference = document.getElementById('chkFilterPeopleByTitlePreference').checked;
                             config.MaxGenres = document.getElementById('chkMaxGenres').value;
                             config.TitleCaseGenres = document.getElementById('chkTitleCaseGenres').checked;
                             config.TidyGenreList = document.getElementById('chkTidyGenres').checked;

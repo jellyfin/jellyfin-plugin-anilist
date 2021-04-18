@@ -55,6 +55,9 @@ namespace Jellyfin.Plugin.AniList.Configuration
         public int AniDbRateLimit { get; set; }
 
         public bool AniDbReplaceGraves { get; set; }
+
         public bool AniListShowSpoilerTags { get; set; }
+
+        public bool FilterPeopleByTitlePreference { get; set; }
     }
 }

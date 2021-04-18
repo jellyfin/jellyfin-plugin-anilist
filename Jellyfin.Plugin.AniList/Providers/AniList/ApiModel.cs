@@ -191,11 +191,20 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         public List<PersonInfo> GetPeopleInfo()
         {
+            PluginConfiguration config = Plugin.Instance.Configuration;
             List<PersonInfo> lpi = new List<PersonInfo>();
             foreach (CharacterEdge edge in this.characters.edges)
             {
                 foreach (VoiceActor va in edge.voiceActors)
                 {
+                    if (config.FilterPeopleByTitlePreference) {
+                        if (config.TitlePreference == TitlePreferenceType.Japanese && va.language != "JAPANESE") {
+                            continue;
+                        }
+                        if (config.TitlePreference == TitlePreferenceType.Localized && va.language == "JAPANESE") {
+                                continue;
+                        }
+                    }
                     PeopleHelper.AddPerson(lpi, new PersonInfo {
                         Name = va.name.full,
                         ImageUrl = va.image.large ?? va.image.medium,
