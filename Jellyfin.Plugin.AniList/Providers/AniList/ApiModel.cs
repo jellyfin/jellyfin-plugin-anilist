@@ -202,7 +202,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                             continue;
                         }
                         if (config.TitlePreference == TitlePreferenceType.Localized && va.language == "JAPANESE") {
-                                continue;
+                            continue;
                         }
                     }
                     PeopleHelper.AddPerson(lpi, new PersonInfo {
