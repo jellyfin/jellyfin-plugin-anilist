@@ -17,7 +17,12 @@
 </p>
 
 ## About
+
 This plugin adds the metadata provider for [AniList](https://anilist.co/).
+
+## Installation
+
+[See the official documentation for install instructions](https://jellyfin.org/docs/general/server/plugins/index.html#installing).
 
 ## Build
 
