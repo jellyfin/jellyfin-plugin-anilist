@@ -64,8 +64,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 if(!config.UseAnitomyLibrary || media == null)
                 {
                     searchName = info.Name;
-                    if(true)
-                        searchName = AnilistSearchHelper.PreprocessTitle(searchName);
+                    searchName = AnilistSearchHelper.PreprocessTitle(searchName);
                     _log.LogInformation("Start AniList... Searching({Name})", searchName);
                     msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
                     if (msr != null)
