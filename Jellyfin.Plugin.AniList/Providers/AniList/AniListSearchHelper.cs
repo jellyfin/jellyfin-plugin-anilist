@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+
+namespace Jellyfin.Plugin.AniList.Providers.AniList
+{
+    public class AnilistSearchHelper
+    {
+        public static String PreprocessTitle(String path)
+        { //Remove items that will always cause anilist to fail
+            String input = path;
+
+            //Season designation 
+            input = Regex.Replace(
+                input, 
+                "(\\s|\\.)S\\d{1,2}", String.Empty);
+            // ~ ALT NAME ~
+            input = Regex.Replace(
+                input, 
+                "\\s*~(\\w|\\d|\\s)+~", String.Empty);
+
+            // Native Name (English Name)
+            // Only replaces if the name ends with a parenthesis to hopefully avoid mangling titles with parens (e.g. Evangelion 1.11 You Are (Not) Alone)
+            input = Regex.Replace(
+                input.Trim(), 
+                "\\((\\w|\\d|\\s)+\\)$", String.Empty);
+
+
+            return input;
+        }
+    }
+}

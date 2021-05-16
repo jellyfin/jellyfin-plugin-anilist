@@ -14,6 +14,8 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Serialization;
 using Microsoft.Extensions.Logging;
+using Jellyfin.Plugin.AniList.Configuration;
+
 
 //API v2
 namespace Jellyfin.Plugin.AniList.Providers.AniList
@@ -37,6 +39,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             var result = new MetadataResult<Movie>();
             Media media = null;
+            PluginConfiguration config = Plugin.Instance.Configuration;
 
             var aid = info.ProviderIds.GetOrDefault(ProviderNames.AniList);
             if (!string.IsNullOrEmpty(aid))
@@ -45,11 +48,30 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             }
             else
             {
-                _log.LogInformation("Start AniList... Searching({Name})", info.Name);
-                MediaSearchResult msr = await _aniListApi.Search_GetSeries(info.Name, cancellationToken);
-                if (msr != null)
+                var searchName = info.Name;
+                MediaSearchResult msr;
+                if(config.UseAnitomyLibrary)
+                {//Use Anitomy to extract the title
+                    searchName = Anitomy.AnitomyHelper.ExtractAnimeTitle(searchName);
+                    searchName = AnilistSearchHelper.PreprocessTitle(searchName);
+                    _log.LogInformation("Start AniList... Searching({Name})", searchName);
+                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
+                    if (msr != null)
+                    {
+                        media = await _aniListApi.GetAnime(msr.id.ToString());
+                    }
+                }
+                if(!config.UseAnitomyLibrary || media == null)
                 {
-                    media = await _aniListApi.GetAnime(msr.id.ToString());
+                    searchName = info.Name;
+                    if(true)
+                        searchName = AnilistSearchHelper.PreprocessTitle(searchName);
+                    _log.LogInformation("Start AniList... Searching({Name})", searchName);
+                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
+                    if (msr != null)
+                    {
+                        media = await _aniListApi.GetAnime(msr.id.ToString());
+                    }
                 }
             }
 
