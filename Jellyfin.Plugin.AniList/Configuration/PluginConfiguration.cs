@@ -38,6 +38,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             AniDbRateLimit = 2000;
             AniDbReplaceGraves = true;
             AniListShowSpoilerTags = true;
+            UseAnitomyLibrary = false;
         }
 
         public TitlePreferenceType TitlePreference { get; set; }
@@ -59,5 +60,8 @@ namespace Jellyfin.Plugin.AniList.Configuration
         public bool AniListShowSpoilerTags { get; set; }
 
         public bool FilterPeopleByTitlePreference { get; set; }
+
+        public bool UseAnitomyLibrary { get; set; }
+
     }
 }
