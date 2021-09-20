@@ -236,11 +236,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             PluginConfiguration config = Plugin.Instance.Configuration;
 
-            if (config.TitleCaseGenres)
-            {
-                this.genres = this.genres.Select(g => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(g)).ToList();
-            }
-
             if (config.AnimeDefaultGenre != AnimeDefaultGenreType.None)
             {
                 this.genres = this.genres

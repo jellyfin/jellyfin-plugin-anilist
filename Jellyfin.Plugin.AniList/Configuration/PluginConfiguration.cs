@@ -32,7 +32,6 @@ namespace Jellyfin.Plugin.AniList.Configuration
             TitlePreference = TitlePreferenceType.Localized;
             OriginalTitlePreference = TitlePreferenceType.JapaneseRomaji;
             MaxGenres = 5;
-            TitleCaseGenres = false;
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
             AniDbRateLimit = 2000;
             AniDbReplaceGraves = true;
@@ -44,8 +43,6 @@ namespace Jellyfin.Plugin.AniList.Configuration
         public TitlePreferenceType OriginalTitlePreference { get; set; }
 
         public int MaxGenres { get; set; }
-
-        public bool TitleCaseGenres { get; set; }
 
         public AnimeDefaultGenreType AnimeDefaultGenre { get; set; }
 

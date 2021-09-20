@@ -37,12 +37,6 @@
                             <input id="chkMaxGenres" name="chkMaxGenres" type="number" is="emby-input" min="0" />
                             <div class="fieldDescription">Set this to zero to remove any limit.</div>
                         </div>
-                        <div class="checkboxContainer checkboxContainer-withDescription">
-                            <label class="emby-checkbox-label">
-                                <input id="chkTitleCaseGenres" name="chkTitleCaseGenres" type="checkbox" is="emby-checkbox" />
-                                <span>Title Case Genres</span>
-                            </label>
-                        </div>
                         <div class="selectContainer">
                             <label class="selectLabel" for="animeDefaultGenre">Anime Default Genre Name</label>
                             <select is="emby-select" id="animeDefaultGenre" name="animeDefaultGenre" class="emby-select-withcolor emby-select">
@@ -89,7 +83,6 @@
                             document.getElementById('originalTitleLanguage').value = config.OriginalTitlePreference;
                             document.getElementById('chkFilterPeopleByTitlePreference').checked = config.FilterPeopleByTitlePreference;
                             document.getElementById('chkMaxGenres').value = config.MaxGenres;
-                            document.getElementById('chkTitleCaseGenres').checked = config.TitleCaseGenres;
                             document.getElementById('animeDefaultGenre').value = config.AnimeDefaultGenre;
                             document.getElementById('chkAniDbRateLimit').value = config.AniDbRateLimit;
                             document.getElementById('chkAniDbReplaceGraves').checked = config.AniDbReplaceGraves;
@@ -107,7 +100,6 @@
                             config.OriginalTitlePreference = document.getElementById('originalTitleLanguage').value;
                             config.FilterPeopleByTitlePreference = document.getElementById('chkFilterPeopleByTitlePreference').checked;
                             config.MaxGenres = document.getElementById('chkMaxGenres').value;
-                            config.TitleCaseGenres = document.getElementById('chkTitleCaseGenres').checked;
                             config.AnimeDefaultGenre = document.getElementById('animeDefaultGenre').value;
                             config.AniDbRateLimit = document.getElementById('chkAniDbRateLimit').value;
                             config.AniDbReplaceGraves = document.getElementById('chkAniDbReplaceGraves').checked;
