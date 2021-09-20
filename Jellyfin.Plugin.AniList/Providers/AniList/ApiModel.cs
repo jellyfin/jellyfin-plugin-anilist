@@ -1,5 +1,6 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using MediaBrowser.Model.Providers;
@@ -228,6 +229,30 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         }
 
         /// <summary>
+        /// Returns a list of genres
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetGenres()
+        {
+            PluginConfiguration config = Plugin.Instance.Configuration;
+
+            if (config.AnimeDefaultGenre != AnimeDefaultGenreType.None)
+            {
+                this.genres = this.genres
+                    .Except(new[] { "Animation", "Anime" })
+                    .Prepend(config.AnimeDefaultGenre.ToString())
+                    .ToList();
+            }
+
+            if (config.MaxGenres > 0)
+            {
+                this.genres = this.genres.Take(config.MaxGenres).ToList();
+            }
+
+            return this.genres.OrderBy(i => i).ToList();
+        }
+
+        /// <summary>
         /// Convert a Media object to a Series
         /// </summary>
         /// <returns></returns>
@@ -243,7 +268,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 EndDate = this.GetStartDate(),
                 CommunityRating = this.GetRating(),
                 RunTimeTicks = this.duration.HasValue ? TimeSpan.FromMinutes(this.duration.Value).Ticks : (long?)null,
-                Genres = this.genres.ToArray(),
+                Genres = this.GetGenres().ToArray(),
                 Tags = this.GetTagNames().ToArray(),
                 Studios = this.GetStudioNames().ToArray(),
                 ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
