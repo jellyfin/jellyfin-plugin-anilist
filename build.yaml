@@ -1,7 +1,7 @@
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 imageUrl: "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-anilist.png"
-version: "3"
+version: "4"
 targetAbi: "10.7.7.0"
 framework: "net5.0"
 owner: "jellyfin"
@@ -13,17 +13,8 @@ category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |2-
-  ### New features and improvements ###
-  - Add original title preference option (#7) @robertgzr
-  - Add native Japanese title to the original title field (#4) @ayyu
-  - Add option to hide tags that are marked as spoilers (#5) @sqlstatement
-
-  ### Dependency updates ###
-  - chore(deps): bump release-drafter/release-drafter from v5.14.0 to v5.15.0 (#6) @dependabot
+  ### Bug Fixes ###
+  - Fix Genre settings (#15) @CommandStorm5
 
   ### CI & build changes ###
-  - Update ci (#11) @h1dden-da3m0n
-  - Let there be CI (#3) @oddstr13
-
-  ### Code or Repo Maintenance ###
-  - chore: plugin images (#8) @h1dden-da3m0n
+  - ci: set ABI version and more repo automation (#17) @h1dden-da3m0n
