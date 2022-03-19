@@ -1,7 +1,7 @@
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 imageUrl: "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-anilist.png"
-version: "5"
+version: "6"
 targetAbi: "10.8.0.0"
 framework: "net6.0"
 owner: "jellyfin"
