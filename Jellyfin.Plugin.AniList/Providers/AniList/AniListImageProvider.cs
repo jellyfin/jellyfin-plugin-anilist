@@ -29,7 +29,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
-            return new[] { ImageType.Primary, ImageType.Banner };
+            return new[] { ImageType.Primary, ImageType.Backdrop };
         }
 
         public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
@@ -62,7 +62,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                         list.Add(new RemoteImageInfo
                         {
                             ProviderName = Name,
-                            Type = ImageType.Banner,
+                            Type = ImageType.Backdrop,
                             Url = media.bannerImage
                         });
                     }
