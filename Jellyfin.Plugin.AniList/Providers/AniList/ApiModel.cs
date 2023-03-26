@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -199,7 +199,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 foreach (VoiceActor va in edge.voiceActors)
                 {
                     if (config.FilterPeopleByTitlePreference) {
-                        if (config.TitlePreference == TitlePreferenceType.Japanese && va.language != "JAPANESE") {
+                        if (config.TitlePreference != TitlePreferenceType.Localized && va.language != "JAPANESE") {
                             continue;
                         }
                         if (config.TitlePreference == TitlePreferenceType.Localized && va.language == "JAPANESE") {
