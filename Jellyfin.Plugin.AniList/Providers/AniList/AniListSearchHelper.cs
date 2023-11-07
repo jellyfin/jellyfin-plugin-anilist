@@ -16,7 +16,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             //Season designation 
             input = Regex.Replace(
                 input, 
-                "(\\s|\\.)S\\d{1,2}", String.Empty);
+                @"(\s|\.)S[0-9]{1,2}", String.Empty);
             // ~ ALT NAME ~
             input = Regex.Replace(
                 input, 
