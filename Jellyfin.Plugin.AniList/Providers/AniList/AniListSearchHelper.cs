@@ -20,7 +20,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             // ~ ALT NAME ~
             input = Regex.Replace(
                 input, 
-                "\\s*~(\\w|\\d|\\s)+~", String.Empty);
+                @"\s*~(\w|[0-9]|\s)+~", String.Empty);
 
             // Native Name (English Name)
             // Only replaces if the name ends with a parenthesis to hopefully avoid mangling titles with parens (e.g. Evangelion 1.11 You Are (Not) Alone)
