@@ -26,7 +26,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             // Only replaces if the name ends with a parenthesis to hopefully avoid mangling titles with parens (e.g. Evangelion 1.11 You Are (Not) Alone)
             input = Regex.Replace(
                 input.Trim(), 
-                "\\((\\w|\\d|\\s)+\\)$", String.Empty);
+                @"\((\w|[0-9]|\s)+\)$", String.Empty);
 
 
             return input;
