@@ -1,8 +1,8 @@
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 imageUrl: "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-anilist.png"
-version: "6"
-targetAbi: "10.8.0.0"
+version: 6
+targetAbi: "10.8.12.0"
 framework: "net6.0"
 owner: "jellyfin"
 overview: "AniList metadata provider"
@@ -13,5 +13,22 @@ category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |2-
+  ### New features and improvements ###
+  - Optionally use the AnitomySharp library to extract media titles (#9) @MisterMcDuck
+  - Change banner to backdrop (#37) @nielsvanvelzen
+
+  ### Bug Fixes ###
+  - Filter out non-japanese VAs for romaji titles (#40) @rzk3
+
   ### Code or Repo Maintenance ###
-  - 10.8 support (#18) @crobibero
+  - Update link to Jellyfin website (#44) @methbkts
+  - Use meta ci (#25) @crobibero
+
+  ### Dependency updates ###
+  - chore(deps): update dotnet monorepo to v7 (major) (#35) @renovate
+  - chore(deps): update dependency microsoft.extensions.dependencyinjection to v6.0.0 (#30) @renovate
+  - chore(deps): update dependency microsoft.extensions.http to v6 (#31) @renovate
+
+  ### CI & build changes ###
+  - fix: meta ci workflows (#29) @h1dden-da3m0n
+  - Use meta ci (#25) @crobibero
