@@ -62,6 +62,12 @@
                                 <span>Display Tags that are marked as spoilers</span>
                             </label>
                         </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input id="chkUseAnitomyLibrary" name="chkUseAnitomyLibrary" type="checkbox" is="emby-checkbox" />
+                                <span>Use the Anitomy library to resolve titles</span>
+                            </label>
+                        </div>
                         <div>
                             <button is="emby-button" type="submit" class="raised button-submit block emby-button">
                                 <span>Save</span>
@@ -87,6 +93,7 @@
                             document.getElementById('chkAniDbRateLimit').value = config.AniDbRateLimit;
                             document.getElementById('chkAniDbReplaceGraves').checked = config.AniDbReplaceGraves;
                             document.getElementById('chkAniListShowSpoilerTags').checked = config.AniListShowSpoilerTags;
+                            document.getElementById('chkUseAnitomyLibrary').checked = config.UseAnitomyLibrary;
 
                             Dashboard.hideLoadingMsg();
                         });
@@ -104,6 +111,7 @@
                             config.AniDbRateLimit = document.getElementById('chkAniDbRateLimit').value;
                             config.AniDbReplaceGraves = document.getElementById('chkAniDbReplaceGraves').checked;
                             config.AniListShowSpoilerTags = document.getElementById('chkAniListShowSpoilerTags').checked;
+                            config.UseAnitomyLibrary = document.getElementById('chkUseAnitomyLibrary').checked;
 
                             ApiClient.updatePluginConfiguration(AniListConfigurationPage.pluginUniqueId, config).then(function (result) {
                                 Dashboard.processPluginConfigurationUpdateResult(result);
