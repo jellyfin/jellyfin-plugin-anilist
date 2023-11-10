@@ -12,7 +12,9 @@ description: >
 category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
-changelog: |2-
+changelog: |-
+  - Revert dotnet7 update (#46) @crobibero
+
   ### New features and improvements ###
   - Optionally use the AnitomySharp library to extract media titles (#9) @MisterMcDuck
   - Change banner to backdrop (#37) @nielsvanvelzen
