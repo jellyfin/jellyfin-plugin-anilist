@@ -65,7 +65,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     searchName = info.Name;
                     searchName = AnilistSearchHelper.PreprocessTitle(searchName);
                     _log.LogInformation("Start AniList... Searching({Name})", searchName);
-                    msr = await _aniListApi.Search_GetSeries(info.Name, cancellationToken);
+                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
                     if (msr != null)
                     {
                         media = await _aniListApi.GetAnime(msr.id.ToString());
