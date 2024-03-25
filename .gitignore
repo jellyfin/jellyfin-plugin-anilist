@@ -112,3 +112,5 @@ UpgradeLog*.XML
 # MonoDevelop metafiles
 MediaBrowser.Plugins.Anime.userprefs
 
+artifacts
+.idea
