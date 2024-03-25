@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Jellyfin.Data.Enums;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Controller.Entities;
@@ -210,7 +211,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                         Name = va.name.full,
                         ImageUrl = va.image.large ?? va.image.medium,
                         Role = edge.node.name.full,
-                        Type = PersonType.Actor,
+                        Type = PersonKind.Actor,
                         ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
                     });
                 }
