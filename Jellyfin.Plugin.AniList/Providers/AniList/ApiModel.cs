@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -273,7 +273,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 Studios = this.GetStudioNames().ToArray(),
                 ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
             };
-            
+
             if (this.status == "FINISHED" || this.status == "CANCELLED")
             {
                 result.Status = SeriesStatus.Ended;
@@ -301,7 +301,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 PremiereDate = this.GetStartDate(),
                 EndDate = this.GetStartDate(),
                 CommunityRating = this.GetRating(),
-                Genres = this.genres.ToArray(),
+                Genres = this.GetGenres().ToArray(),
                 Tags = this.GetTagNames().ToArray(),
                 Studios = this.GetStudioNames().ToArray(),
                 ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
