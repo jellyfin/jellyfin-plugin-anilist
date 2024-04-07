@@ -283,6 +283,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             {
                 result.Status = SeriesStatus.Continuing;
             }
+            else if (this.status == "NOT_YET_RELEASED")
+            {
+                result.Status = SeriesStatus.Unreleased;
+            }
 
             return result;
         }
