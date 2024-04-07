@@ -22,17 +22,15 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     public class AniListMovieProvider : IRemoteMetadataProvider<Movie, MovieInfo>, IHasOrder
     {
-        private readonly IApplicationPaths _paths;
         private readonly ILogger _log;
         private readonly AniListApi _aniListApi;
         public int Order => -2;
         public string Name => "AniList";
 
-        public AniListMovieProvider(IApplicationPaths appPaths, ILogger<AniListMovieProvider> logger)
+        public AniListMovieProvider(ILogger<AniListMovieProvider> logger)
         {
             _log = logger;
             _aniListApi = new AniListApi();
-            _paths = appPaths;
         }
 
         public async Task<MetadataResult<Movie>> GetMetadata(MovieInfo info, CancellationToken cancellationToken)
@@ -80,7 +78,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 result.Item = media.ToMovie();
                 result.People = media.GetPeopleInfo();
                 result.Provider = ProviderNames.AniList;
-                StoreImageUrl(media.id.ToString(), media.GetImageUrl(), "image");
             }
 
             return result;
@@ -110,15 +107,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             }
 
             return results;
-        }
-
-        private void StoreImageUrl(string series, string url, string type)
-        {
-            var path = Path.Combine(_paths.CachePath, "anilist", type, series + ".txt");
-            var directory = Path.GetDirectoryName(path);
-            Directory.CreateDirectory(directory);
-
-            File.WriteAllText(path, url);
         }
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
