@@ -2,28 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Jellyfin.Plugin.AniList.Configuration;
-using MediaBrowser.Controller.Entities;
-using MediaBrowser.Model.Entities;
-using MediaBrowser.Model.Providers;
+using Jellyfin.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     /// <summary>
     /// Based on the new API from AniList
     /// 🛈 This code works with the API Interface (v2) from AniList
-    /// 🛈 https://anilist.gitbooks.io/anilist-apiv2-docs
+    /// 🛈 https://anilist.gitbook.io/anilist-apiv2-docs
     /// 🛈 THIS IS AN UNOFFICAL API INTERFACE FOR JELLYFIN
     /// </summary>
     public class AniListApi
     {
-        private const string SearchLink = @"https://graphql.anilist.co/api/v2?query=
-query ($query: String, $type: MediaType) {
+        private const string BaseApiUrl = "https://graphql.anilist.co/";
+
+        private const string SearchAnimeGraphqlQuery = @"
+query ($query: String) {
   Page {
-    media(search: $query, type: $type) {
+    media(search: $query, type: ANIME) {
       id
       title {
         romaji
@@ -42,10 +44,11 @@ query ($query: String, $type: MediaType) {
       }
     }
   }
-}&variables={ ""query"":""{0}"",""type"":""ANIME""}";
-        public string AnimeLink = @"https://graphql.anilist.co/api/v2?query=
-query($id: Int!, $type: MediaType) {
-  Media(id: $id, type: $type) {
+}";
+
+        private const string GetAnimeGraphqlQuery = @"
+query($id: Int!) {
+  Media(id: $id, type: ANIME) {
     id
     title {
       romaji
@@ -102,7 +105,7 @@ query($id: Int!, $type: MediaType) {
         isAnimationStudio
       }
     }
-    characters(sort: [ROLE]) {
+    characters(sort: [ROLE, FAVOURITES_DESC]) {
       edges {
         node {
           id
@@ -129,15 +132,67 @@ query($id: Int!, $type: MediaType) {
             medium
             large
           }
-          language
+          languageV2
         }
       }
     }
   }
-}&variables={ ""id"":""{0}"",""type"":""ANIME""}";
+}";
 
-        static AniListApi()
-        {
+        private const string SearchStaffGraphqlQuery = @"
+query($query: String) {
+  Page {
+    staff(search: $query) {
+      id
+      name {
+        first
+        last
+        full
+        native
+      }
+      image {
+        large
+        medium
+      }
+    }
+  }
+}";
+
+        private const string GetStaffGraphqlQuery = @"
+query($id: Int!) {
+  Staff(id: $id) {
+    id
+    name {
+      first
+      last
+      full
+      native
+    }
+    image {
+      large
+      medium
+    }
+    description(asHtml: true)
+    homeTown
+    dateOfBirth {
+      year
+      month
+      day
+    }
+    dateOfDeath {
+      year
+      month
+      day
+    }
+  }
+}";
+
+        private class GraphQlRequest {
+            [JsonPropertyName("query")]
+            public string Query { get; set; }
+
+            [JsonPropertyName("variables")]
+            public Dictionary<string, string> Variables { get; set; }
         }
 
         /// <summary>
@@ -145,9 +200,17 @@ query($id: Int!, $type: MediaType) {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<Media> GetAnime(string id)
+        public async Task<Media> GetAnime(string id, CancellationToken cancellationToken)
         {
-            return (await WebRequestAPI(AnimeLink.Replace("{0}", id))).data?.Media;
+            RootObject result = await WebRequestAPI(
+                new GraphQlRequest {
+                    Query = GetAnimeGraphqlQuery,
+                    Variables = new Dictionary<string, string> {{"id", id}},
+                },
+                cancellationToken
+            );
+
+            return result.data?.Media;
         }
 
         /// <summary>
@@ -158,13 +221,7 @@ query($id: Int!, $type: MediaType) {
         /// <returns></returns>
         public async Task<MediaSearchResult> Search_GetSeries(string title, CancellationToken cancellationToken)
         {
-            // Reimplemented instead of calling Search_GetSeries_list() for efficiency
-            RootObject WebContent = await WebRequestAPI(SearchLink.Replace("{0}", title));
-            foreach (MediaSearchResult media in WebContent.data.Page.media)
-            {
-                return media;
-            }
-            return null;
+            return (await Search_GetSeries_list(title, cancellationToken)).FirstOrDefault();
         }
 
         /// <summary>
@@ -175,7 +232,15 @@ query($id: Int!, $type: MediaType) {
         /// <returns></returns>
         public async Task<List<MediaSearchResult>> Search_GetSeries_list(string title, CancellationToken cancellationToken)
         {
-            return (await WebRequestAPI(SearchLink.Replace("{0}", title))).data.Page.media;
+            RootObject result = await WebRequestAPI(
+                new GraphQlRequest {
+                    Query = SearchAnimeGraphqlQuery,
+                    Variables = new Dictionary<string, string> {{"query", title}},
+                },
+                cancellationToken
+            );
+
+            return result.data.Page.media;
         }
 
         /// <summary>
@@ -200,20 +265,45 @@ query($id: Int!, $type: MediaType) {
             return null;
         }
 
+        public async Task<Staff> GetStaff(int id, CancellationToken cancellationToken)
+        {
+            RootObject result = await WebRequestAPI(
+                new GraphQlRequest {
+                    Query = GetStaffGraphqlQuery,
+                    Variables = new Dictionary<string, string> {{"id", id.ToString()}},
+                },
+                cancellationToken
+            );
+
+            return result.data?.Staff;
+        }
+
+        public async Task<List<Staff>> SearchStaff(string query, CancellationToken cancellationToken)
+        {
+            RootObject result = await WebRequestAPI(
+                new GraphQlRequest {
+                    Query = SearchStaffGraphqlQuery,
+                    Variables = new Dictionary<string, string> {{"query", query}},
+                },
+                cancellationToken
+            );
+
+            return result.data?.Page.staff;
+        }
+
         /// <summary>
-        /// GET and parse JSON content from link, deserialize into a RootObject
+        /// Send a GraphQL request, deserialize into a RootObject
         /// </summary>
-        /// <param name="link"></param>
+        /// <param name="request">The GraphQl request payload</param>
         /// <returns></returns>
-        public async Task<RootObject> WebRequestAPI(string link)
+        private async Task<RootObject> WebRequestAPI(GraphQlRequest request, CancellationToken cancellationToken)
         {
             var httpClient = Plugin.Instance.GetHttpClient();
-            using (HttpContent content = new FormUrlEncodedContent(Enumerable.Empty<KeyValuePair<string, string>>()))
-            using (var response = await httpClient.PostAsync(link, content).ConfigureAwait(false))
-            using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-            {
-                return await JsonSerializer.DeserializeAsync<RootObject>(responseStream).ConfigureAwait(false);
-            }
+
+            using HttpContent content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            using var response = await httpClient.PostAsync(BaseApiUrl, content, cancellationToken).ConfigureAwait(false);
+            using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+            return await JsonSerializer.DeserializeAsync<RootObject>(responseStream, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

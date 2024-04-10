@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
@@ -42,7 +43,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             var aid = info.ProviderIds.GetOrDefault(ProviderNames.AniList);
             if (!string.IsNullOrEmpty(aid))
             {
-                media = await _aniListApi.GetAnime(aid);
+                media = await _aniListApi.GetAnime(aid, cancellationToken);
             }
             else
             {
@@ -56,7 +57,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
                     if (msr != null)
                     {
-                        media = await _aniListApi.GetAnime(msr.id.ToString());
+                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken);
                     }
                 }
                 if(!config.UseAnitomyLibrary || media == null)
@@ -67,7 +68,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
                     if (msr != null)
                     {
-                        media = await _aniListApi.GetAnime(msr.id.ToString());
+                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken);
                     }
                 }
             }
@@ -90,7 +91,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             var aid = searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniList);
             if (!string.IsNullOrEmpty(aid))
             {
-                Media aid_result = await _aniListApi.GetAnime(aid).ConfigureAwait(false);
+                Media aid_result = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
                 if (aid_result != null)
                 {
                     results.Add(aid_result.ToSearchResult());
