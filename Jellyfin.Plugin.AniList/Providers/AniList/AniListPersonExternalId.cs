@@ -1,15 +1,14 @@
-﻿using MediaBrowser.Controller.Entities.TV;
-using MediaBrowser.Controller.Entities.Movies;
+﻿using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    public class AniListExternalId : IExternalId
+    public class AniListPersonExternalId : IExternalId
     {
         public bool Supports(IHasProviderIds item)
-            => item is Series || item is Movie;
+            => item is Person;
 
         public string ProviderName
             => "AniList";
@@ -18,9 +17,9 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             => ProviderNames.AniList;
 
         public ExternalIdMediaType? Type
-            => ExternalIdMediaType.Series;
+            => ExternalIdMediaType.Person;
 
         public string UrlFormatString
-            => "https://anilist.co/anime/{0}/";
+            => "https://anilist.co/staff/{0}/";
     }
 }
