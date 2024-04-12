@@ -35,7 +35,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             input = Regex.Replace(input, @"\#", " ");
 
             // Truncate suggested Jellyfin folder format for the anilist search. Example: The Melancholy of Haruhi Suzumiya (2006) [tvdbid-79414]
-            input = Regex.Replace(input.Trim(), @"\(\d{4}\)\s*\[(\w|\d|-)+\]$", String.Empty);
+            input = Regex.Replace(input.Trim(), @"\([0-9]{4}\)\s*\[(\w|[0-9]|-)+\]$", String.Empty);
 
 
             return input;
