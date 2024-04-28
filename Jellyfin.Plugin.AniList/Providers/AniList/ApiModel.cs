@@ -199,10 +199,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 foreach (VoiceActor va in edge.voiceActors)
                 {
                     if (config.PersonLanguageFilterPreference != LanguageFilterType.All) {
-                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Japanese && va.language != "JAPANESE") {
+                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Japanese && va.language != "Japanese") {
                             continue;
                         }
-                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Localized && va.language == "JAPANESE") {
+                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Localized && va.language == "Japanese") {
                             continue;
                         }
                     }

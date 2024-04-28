@@ -33,10 +33,26 @@
                                 <option id="optLanguageJapanese" value="Japanese">Japanese</option>
                                 <option id="optLanguageAll" value="All">Do not filter</option>
                             </select>
-                            <div class="fieldDescription">This setting will only retain the people with the language chosen above. Localized keeps everything except Japanese.</div>
+                            <div class="fieldDescription">This setting will only keep people with chosen language. Localized retains everything except Japanese.</div>
+                        </div>
+                        <div class="paperList checkboxList checkboxList-paperList">
+                            <div data-role="controlgroup">
+                                <label class="emby-checkbox-label">
+                                    <input is="emby-checkbox"  id="mainCharacters" type="checkbox" name="Main Characters"> 
+                                    <span class="checkboxLabel">Main character</span>
+                                </label>
+                                <label class="emby-checkbox-label">
+                                    <input is="emby-checkbox" id="supportingCharacter" type="checkbox" name="Supporting Characters"> 
+                                    <span class="checkboxLabel">Supporting character</span>
+                                </label>
+                                <label class="emby-checkbox-label">
+                                    <input is="emby-checkbox" id="backgroundCharacter" type="checkbox" name="English Movies"> 
+                                    <span class="checkboxLabel">Background Character</span>
+                                </label>
+                            </div>
                         </div>
                         <div class="inputContainer">
-                            <label class="inputeLabel inputLabelUnfocused" for="chkMaxGenres">Max Genres</label>
+                            <label class="inputLabel inputLabelUnfocused" for="chkMaxGenres">Max Genres</label>
                             <input id="chkMaxGenres" name="chkMaxGenres" type="number" is="emby-input" min="0" />
                             <div class="fieldDescription">Set this to zero to remove any limit.</div>
                         </div>
@@ -49,7 +65,7 @@
                             </select>
                         </div>
                         <div class="inputContainer">
-                            <label class="inputeLabel inputLabelUnfocused" for="chkAniDbRateLimit">AniDB Rate Limit</label>
+                            <label class="inputLabel inputLabelUnfocused" for="chkAniDbRateLimit">AniDB Rate Limit</label>
                             <input id="chkAniDbRateLimit" name="chkAniDbRateLimit" type="number" is="emby-input" min="0" />
                             <div class="fieldDescription">This will prevent IP bans for requesting data too quickly.</div>
                         </div>

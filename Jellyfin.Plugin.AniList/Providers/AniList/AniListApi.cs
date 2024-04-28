@@ -129,7 +129,7 @@ query($id: Int!, $type: MediaType) {
             medium
             large
           }
-          language
+          language: languageV2
         }
       }
     }
