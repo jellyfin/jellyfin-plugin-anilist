@@ -38,6 +38,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             TitlePreference = TitlePreferenceType.Localized;
             OriginalTitlePreference = TitlePreferenceType.JapaneseRomaji;
             PersonLanguageFilterPreference = LanguageFilterType.All;
+            RoleFilter = new string[]{"mainCharacter", "supportingCharacter"};
             MaxPeople = 0;
             MaxGenres = 5;
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
@@ -46,6 +47,8 @@ namespace Jellyfin.Plugin.AniList.Configuration
             AniListShowSpoilerTags = true;
             UseAnitomyLibrary = false;
         }
+
+        public string[] RoleFilter { get; set; }
 
         public TitlePreferenceType TitlePreference { get; set; }
 

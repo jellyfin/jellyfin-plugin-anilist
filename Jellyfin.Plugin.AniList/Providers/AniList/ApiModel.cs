@@ -1,9 +1,7 @@
 ﻿﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using Jellyfin.Data.Enums;
+using System.Text.Json.Serialization;
+using System.Runtime.Serialization;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Controller.Entities;
@@ -195,25 +193,33 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             PluginConfiguration config = Plugin.Instance.Configuration;
             List<PersonInfo> lpi = new List<PersonInfo>();
+            Dictionary<string, string> mapping = new Dictionary<string, string>() {
+                {"MAIN", "mainCharacter"},
+                {"SUPPORTING", "supportingCharacter"},
+                {"BACKGROUND", "backgroundCharacter"}
+
+            };
             foreach (CharacterEdge edge in this.characters.edges)
             {
-                foreach (VoiceActor va in edge.voiceActors)
-                {
-                    if (config.PersonLanguageFilterPreference != LanguageFilterType.All) {
-                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Japanese && va.language != "Japanese") {
-                            continue;
+                if (config.RoleFilter.Contains(mapping.GetValueOrDefault(edge.role, "mainCharacter"))) { 
+                    foreach (VoiceActor va in edge.voiceActors)
+                    {
+                        if (config.PersonLanguageFilterPreference != LanguageFilterType.All) {
+                            if (config.PersonLanguageFilterPreference == LanguageFilterType.Japanese && va.language != "Japanese") {
+                                continue;
+                            }
+                            if (config.PersonLanguageFilterPreference == LanguageFilterType.Localized && va.language == "Japanese") {
+                                continue;
+                            }
                         }
-                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Localized && va.language == "Japanese") {
-                            continue;
-                        }
+                        PeopleHelper.AddPerson(lpi, new PersonInfo {
+                            Name = va.name.full,
+                            ImageUrl = va.image.large ?? va.image.medium,
+                            Role = edge.node.name.full,
+                            Type = PersonKind.Actor,
+                            ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
+                        });
                     }
-                    PeopleHelper.AddPerson(lpi, new PersonInfo {
-                        Name = va.name.full,
-                        ImageUrl = va.image.large ?? va.image.medium,
-                        Role = edge.node.name.full,
-                        Type = PersonKind.Actor,
-                        ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
-                    });
                 }
             }
 
