@@ -8,7 +8,6 @@ using MediaBrowser.Common.Plugins;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
-using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.AniList
 {
