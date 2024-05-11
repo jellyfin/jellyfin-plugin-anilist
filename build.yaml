@@ -13,6 +13,7 @@ category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |-
+  - force change for 10.9 (#62) @crobibero
   - Unstable (#61) @crobibero
 
   ### Bug Fixes ###
