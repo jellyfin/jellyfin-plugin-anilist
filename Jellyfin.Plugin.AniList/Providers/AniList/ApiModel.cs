@@ -216,6 +216,12 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     });
                 }
             }
+
+            if (config.MaxPeople > 0)
+            {
+                lpi = lpi.Take(config.MaxPeople).ToList();
+            }
+
             return lpi;
         }
 

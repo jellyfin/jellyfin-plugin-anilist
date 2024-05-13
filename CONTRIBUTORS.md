@@ -5,6 +5,7 @@
  - [hawken93](https://github.com/hawken93)
  - [dkanada](https://github.com/dkanada)
  - [StillLoading](https://github.com/StillLoading)
+ - [AkaTenshi](https://github.com/AkaTenshi)
 
 # Emby Contributors
 
