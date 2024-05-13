@@ -13,8 +13,8 @@ category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |-
-  - Limit amount of people in metadata search result (#68) @AkaTenshi
-  - Feature: Decouples VA filter from the title language, and moves to the new Anilist StaffLanguage API key (#65) @mmshivesh
+  - Limit amount of people in metadata search result (#68) @crobibero
+  - Feature: Decouples VA filter from the title language, and moves to the new Anilist StaffLanguage API key (#65) @crobibero
 
   ### Dependency updates ###
   - Update dependency AnitomySharp.NET6 to v0.5.1 (#64) @renovate
