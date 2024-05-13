@@ -20,17 +20,15 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     public class AniListSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
     {
-        private readonly IApplicationPaths _paths;
         private readonly ILogger<AniListSeriesProvider> _log;
         private readonly AniListApi _aniListApi;
         public int Order => -2;
         public string Name => "AniList";
 
-        public AniListSeriesProvider(IApplicationPaths appPaths, ILogger<AniListSeriesProvider> logger)
+        public AniListSeriesProvider(ILogger<AniListSeriesProvider> logger)
         {
             _log = logger;
             _aniListApi = new AniListApi();
-            _paths = appPaths;
         }
 
         public async Task<MetadataResult<Series>> GetMetadata(SeriesInfo info, CancellationToken cancellationToken)
@@ -65,7 +63,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     searchName = info.Name;
                     searchName = AnilistSearchHelper.PreprocessTitle(searchName);
                     _log.LogInformation("Start AniList... Searching({Name})", searchName);
-                    msr = await _aniListApi.Search_GetSeries(info.Name, cancellationToken);
+                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
                     if (msr != null)
                     {
                         media = await _aniListApi.GetAnime(msr.id.ToString());
@@ -79,7 +77,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 result.Item = media.ToSeries();
                 result.People = media.GetPeopleInfo();
                 result.Provider = ProviderNames.AniList;
-                StoreImageUrl(media.id.ToString(), media.GetImageUrl(), "image");
             }
 
             return result;
@@ -109,15 +106,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             }
 
             return results;
-        }
-
-        private void StoreImageUrl(string series, string url, string type)
-        {
-            var path = Path.Combine(_paths.CachePath, "anilist", type, series + ".txt");
-            var directory = Path.GetDirectoryName(path);
-            Directory.CreateDirectory(directory);
-
-            File.WriteAllText(path, url);
         }
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)

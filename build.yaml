@@ -1,9 +1,9 @@
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 imageUrl: "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-anilist.png"
-version: 7
-targetAbi: "10.8.12.0"
-framework: "net6.0"
+version: 8
+targetAbi: "10.9.0.0"
+framework: "net8.0"
 owner: "jellyfin"
 overview: "AniList metadata provider"
 description: >
@@ -13,24 +13,8 @@ category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |-
-  - Revert dotnet7 update (#46) @crobibero
-
-  ### New features and improvements ###
-  - Optionally use the AnitomySharp library to extract media titles (#9) @MisterMcDuck
-  - Change banner to backdrop (#37) @nielsvanvelzen
+  - force change for 10.9 (#62) @crobibero
+  - Unstable (#61) @crobibero
 
   ### Bug Fixes ###
-  - Filter out non-japanese VAs for romaji titles (#40) @rzk3
-
-  ### Code or Repo Maintenance ###
-  - Update link to Jellyfin website (#44) @methbkts
-  - Use meta ci (#25) @crobibero
-
-  ### Dependency updates ###
-  - chore(deps): update dotnet monorepo to v7 (major) (#35) @renovate
-  - chore(deps): update dependency microsoft.extensions.dependencyinjection to v6.0.0 (#30) @renovate
-  - chore(deps): update dependency microsoft.extensions.http to v6 (#31) @renovate
-
-  ### CI & build changes ###
-  - fix: meta ci workflows (#29) @h1dden-da3m0n
-  - Use meta ci (#25) @crobibero
+  - Fix genre settings not being applied to movies (#52) @HansLehnert

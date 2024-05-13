@@ -26,19 +26,22 @@
                                 <option id="optLanguageJapaneseRomaji" value="JapaneseRomaji">Romaji</option>
                             </select>
                         </div>
-                        <div class="checkboxContainer checkboxContainer-withDescription">
-                            <label class="emby-checkbox-label">
-                                <input id="chkFilterPeopleByTitlePreference" name="chkFilterPeopleByTitlePreference" type="checkbox" is="emby-checkbox" />
-                                <span>Filter people by title preference</span>
-                            </label>
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="filterPeopleByLanguage">Filter People by Language Preference</label>
+                            <select is="emby-select" id="filterPeopleByLanguage" name="filterPeopleByLanguage" class="emby-select-withcolor emby-select">
+                                <option id="optLanguageLocalized" value="Localized">Localized</option>
+                                <option id="optLanguageJapanese" value="Japanese">Japanese</option>
+                                <option id="optLanguageAll" value="All">Do not filter</option>
+                            </select>
+                            <div class="fieldDescription">This setting will only keep people with chosen language. Choosing Localized will retain everybody except Japanese VAs.</div>
                         </div>
                         <div class="inputContainer">
-                            <label class="inputeLabel inputLabelUnfocused" for="chkMaxPeople">Max People</label>
+                            <label class="inputLabel inputLabelUnfocused" for="chkMaxPeople">Max People</label>
                             <input id="chkMaxPeople" name="chkMaxPeople" type="number" is="emby-input" min="0" />
                             <div class="fieldDescription">Set this to zero to remove any limit.</div>
                         </div>
                         <div class="inputContainer">
-                            <label class="inputeLabel inputLabelUnfocused" for="chkMaxGenres">Max Genres</label>
+                            <label class="inputLabel inputLabelUnfocused" for="chkMaxGenres">Max Genres</label>
                             <input id="chkMaxGenres" name="chkMaxGenres" type="number" is="emby-input" min="0" />
                             <div class="fieldDescription">Set this to zero to remove any limit.</div>
                         </div>
@@ -51,7 +54,7 @@
                             </select>
                         </div>
                         <div class="inputContainer">
-                            <label class="inputeLabel inputLabelUnfocused" for="chkAniDbRateLimit">AniDB Rate Limit</label>
+                            <label class="inputLabel inputLabelUnfocused" for="chkAniDbRateLimit">AniDB Rate Limit</label>
                             <input id="chkAniDbRateLimit" name="chkAniDbRateLimit" type="number" is="emby-input" min="0" />
                             <div class="fieldDescription">This will prevent IP bans for requesting data too quickly.</div>
                         </div>
@@ -92,7 +95,7 @@
                         ApiClient.getPluginConfiguration(AniListConfigurationPage.pluginUniqueId).then(function (config) {
                             document.getElementById('titleLanguage').value = config.TitlePreference;
                             document.getElementById('originalTitleLanguage').value = config.OriginalTitlePreference;
-                            document.getElementById('chkFilterPeopleByTitlePreference').checked = config.FilterPeopleByTitlePreference;
+                            document.getElementById('filterPeopleByLanguage').value = config.PersonLanguageFilterPreference;
                             document.getElementById('chkMaxPeople').value = config.MaxPeople;
                             document.getElementById('chkMaxGenres').value = config.MaxGenres;
                             document.getElementById('animeDefaultGenre').value = config.AnimeDefaultGenre;
@@ -111,7 +114,7 @@
                         ApiClient.getPluginConfiguration(AniListConfigurationPage.pluginUniqueId).then(function (config) {
                             config.TitlePreference = document.getElementById('titleLanguage').value;
                             config.OriginalTitlePreference = document.getElementById('originalTitleLanguage').value;
-                            config.FilterPeopleByTitlePreference = document.getElementById('chkFilterPeopleByTitlePreference').checked;
+                            config.PersonLanguageFilterPreference = document.getElementById('filterPeopleByLanguage').value;
                             config.MaxPeople = document.getElementById('chkMaxPeople').value;
                             config.MaxGenres = document.getElementById('chkMaxGenres').value;
                             config.AnimeDefaultGenre = document.getElementById('animeDefaultGenre').value;
