@@ -25,12 +25,19 @@ namespace Jellyfin.Plugin.AniList.Configuration
         None, Anime, Animation
     }
 
+    public enum LanguageFilterType {
+        Localized,
+        Japanese,
+        All
+    }
+
     public class PluginConfiguration : BasePluginConfiguration
     {
         public PluginConfiguration()
         {
             TitlePreference = TitlePreferenceType.Localized;
             OriginalTitlePreference = TitlePreferenceType.JapaneseRomaji;
+            PersonLanguageFilterPreference = LanguageFilterType.All;
             MaxGenres = 5;
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
             AniDbRateLimit = 2000;
@@ -43,6 +50,8 @@ namespace Jellyfin.Plugin.AniList.Configuration
 
         public TitlePreferenceType OriginalTitlePreference { get; set; }
 
+        public LanguageFilterType PersonLanguageFilterPreference { get; set; }
+
         public int MaxGenres { get; set; }
 
         public AnimeDefaultGenreType AnimeDefaultGenre { get; set; }
@@ -52,8 +61,6 @@ namespace Jellyfin.Plugin.AniList.Configuration
         public bool AniDbReplaceGraves { get; set; }
 
         public bool AniListShowSpoilerTags { get; set; }
-
-        public bool FilterPeopleByTitlePreference { get; set; }
 
         public bool UseAnitomyLibrary { get; set; }
 
