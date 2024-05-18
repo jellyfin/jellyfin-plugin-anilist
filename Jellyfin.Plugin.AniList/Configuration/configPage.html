@@ -10,6 +10,7 @@
             <div data-role="content">
                 <div class="content-primary">
                     <form id="aniListConfigurationForm">
+                        <h2>Language Settings</h2>
                         <div class="selectContainer">
                             <label class="selectLabel" for="titleLanguage">Title Language</label>
                             <select is="emby-select" id="titleLanguage" name="titleLanguage" class="emby-select-withcolor emby-select">
@@ -26,15 +27,38 @@
                                 <option id="optLanguageJapaneseRomaji" value="JapaneseRomaji">Romaji</option>
                             </select>
                         </div>
+                        <h2>People Filters</h2>
+                        <div>The following filters can be used together to trim the list of people shown under a show or a movie.</div>
                         <div class="selectContainer">
-                            <label class="selectLabel" for="filterPeopleByLanguage">Filter People by Language Preference</label>
+                            <label class="selectLabel" for="filterPeopleByLanguage">By Language Preference</label>
                             <select is="emby-select" id="filterPeopleByLanguage" name="filterPeopleByLanguage" class="emby-select-withcolor emby-select">
                                 <option id="optLanguageLocalized" value="Localized">Localized</option>
                                 <option id="optLanguageJapanese" value="Japanese">Japanese</option>
                                 <option id="optLanguageAll" value="All">Do not filter</option>
                             </select>
-                            <div class="fieldDescription">This setting will only keep people with chosen language. Choosing Localized will retain everybody except Japanese VAs.</div>
+                            <div class="fieldDescription">This setting will only include people with chosen language. Choosing "Localized" will retain everybody except Japanese VAs.</div>
                         </div>
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="filterPeopleByLanguage">By Character Role</label>
+                            <div class="paperList checkboxList checkboxList-paperList">
+                                <div data-role="controlgroup">
+                                    <label class="emby-checkbox-label">
+                                        <input is="emby-checkbox" class="characterRole" id="mainCharacter" type="checkbox" name="Main Characters"> 
+                                        <span class="checkboxLabel">Main Characters</span>
+                                    </label>
+                                    <label class="emby-checkbox-label">
+                                        <input is="emby-checkbox" class="characterRole" id="supportingCharacter" type="checkbox" name="Supporting Characters"> 
+                                        <span class="checkboxLabel">Supporting Characters</span>
+                                    </label>
+                                    <label class="emby-checkbox-label">
+                                        <input is="emby-checkbox" class="characterRole" id="backgroundCharacter" type="checkbox" name="English Movies"> 
+                                        <span class="checkboxLabel">Background Characters</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="fieldDescription">This setting will only keep people with the specific Character Role.</div>
+                        </div>
+                        <h2>Genre Settings</h2>
                         <div class="inputContainer">
                             <label class="inputLabel inputLabelUnfocused" for="chkMaxPeople">Max People</label>
                             <input id="chkMaxPeople" name="chkMaxPeople" type="number" is="emby-input" min="0" />
@@ -53,6 +77,7 @@
                                 <option id="optDefaultGenreAnimation" value="Animation">Animation</option>
                             </select>
                         </div>
+                        <h2>AniDB Settings</h2>
                         <div class="inputContainer">
                             <label class="inputLabel inputLabelUnfocused" for="chkAniDbRateLimit">AniDB Rate Limit</label>
                             <input id="chkAniDbRateLimit" name="chkAniDbRateLimit" type="number" is="emby-input" min="0" />
@@ -64,6 +89,7 @@
                                 <span>AniDB Replace Grave Characters</span>
                             </label>
                         </div>
+                        <h2>Other Settings</h2>
                         <div class="checkboxContainer checkboxContainer-withDescription">
                             <label class="emby-checkbox-label">
                                 <input id="chkAniListShowSpoilerTags" name="chkAniListShowSpoilerTags" type="checkbox" is="emby-checkbox" />
@@ -97,6 +123,12 @@
                             document.getElementById('originalTitleLanguage').value = config.OriginalTitlePreference;
                             document.getElementById('filterPeopleByLanguage').value = config.PersonLanguageFilterPreference;
                             document.getElementById('chkMaxPeople').value = config.MaxPeople;
+                            for (filter of config.RoleFilter) {
+                                document.getElementById(filter).checked = true;
+                            }
+//                            for (char in ['mainCharacter', 'supportingCharacter','backgroundCharacter']) {
+//                                document.getElementById(char).checked = config.RoleFilter[char];
+//                            }
                             document.getElementById('chkMaxGenres').value = config.MaxGenres;
                             document.getElementById('animeDefaultGenre').value = config.AnimeDefaultGenre;
                             document.getElementById('chkAniDbRateLimit').value = config.AniDbRateLimit;
@@ -116,13 +148,18 @@
                             config.OriginalTitlePreference = document.getElementById('originalTitleLanguage').value;
                             config.PersonLanguageFilterPreference = document.getElementById('filterPeopleByLanguage').value;
                             config.MaxPeople = document.getElementById('chkMaxPeople').value;
+                            config.RoleFilter = Array.prototype.map.call(document.querySelectorAll('.characterRole:checked'), element => {
+                                return element.getAttribute('id');
+                            });
+//                            for (char in ['mainCharacter', 'supportingCharacter','backgroundCharacter']) {
+//                                config.RoleFilter.push({key: char, value: document.getElementById(char).checked});
+//                            }
                             config.MaxGenres = document.getElementById('chkMaxGenres').value;
                             config.AnimeDefaultGenre = document.getElementById('animeDefaultGenre').value;
                             config.AniDbRateLimit = document.getElementById('chkAniDbRateLimit').value;
                             config.AniDbReplaceGraves = document.getElementById('chkAniDbReplaceGraves').checked;
                             config.AniListShowSpoilerTags = document.getElementById('chkAniListShowSpoilerTags').checked;
                             config.UseAnitomyLibrary = document.getElementById('chkUseAnitomyLibrary').checked;
-
                             ApiClient.updatePluginConfiguration(AniListConfigurationPage.pluginUniqueId, config).then(function (result) {
                                 Dashboard.processPluginConfigurationUpdateResult(result);
                             });
