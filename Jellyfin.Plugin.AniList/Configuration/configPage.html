@@ -76,6 +76,12 @@
                                 <span>Use the Anitomy library to resolve titles</span>
                             </label>
                         </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input id="chkOnlyAnimationStudios" name="chkOnlyAnimationStudios" type="checkbox" is="emby-checkbox" />
+                                <span>Only get studios that are animation studios</span>
+                            </label>
+                        </div>
                         <div>
                             <button is="emby-button" type="submit" class="raised button-submit block emby-button">
                                 <span>Save</span>
@@ -103,6 +109,7 @@
                             document.getElementById('chkAniDbReplaceGraves').checked = config.AniDbReplaceGraves;
                             document.getElementById('chkAniListShowSpoilerTags').checked = config.AniListShowSpoilerTags;
                             document.getElementById('chkUseAnitomyLibrary').checked = config.UseAnitomyLibrary;
+                            document.getElementById('chkOnlyAnimationStudios').checked = config.OnlyAnimationStudios;
 
                             Dashboard.hideLoadingMsg();
                         });
@@ -122,6 +129,7 @@
                             config.AniDbReplaceGraves = document.getElementById('chkAniDbReplaceGraves').checked;
                             config.AniListShowSpoilerTags = document.getElementById('chkAniListShowSpoilerTags').checked;
                             config.UseAnitomyLibrary = document.getElementById('chkUseAnitomyLibrary').checked;
+                            config.chkOnlyAnimationStudios = document.getElementById('chkOnlyAnimationStudios').checked;
 
                             ApiClient.updatePluginConfiguration(AniListConfigurationPage.pluginUniqueId, config).then(function (result) {
                                 Dashboard.processPluginConfigurationUpdateResult(result);
