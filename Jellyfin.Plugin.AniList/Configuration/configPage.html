@@ -129,7 +129,7 @@
                             config.AniDbReplaceGraves = document.getElementById('chkAniDbReplaceGraves').checked;
                             config.AniListShowSpoilerTags = document.getElementById('chkAniListShowSpoilerTags').checked;
                             config.UseAnitomyLibrary = document.getElementById('chkUseAnitomyLibrary').checked;
-                            config.chkOnlyAnimationStudios = document.getElementById('chkOnlyAnimationStudios').checked;
+                            config.OnlyAnimationStudios = document.getElementById('chkOnlyAnimationStudios').checked;
 
                             ApiClient.updatePluginConfiguration(AniListConfigurationPage.pluginUniqueId, config).then(function (result) {
                                 Dashboard.processPluginConfigurationUpdateResult(result);
