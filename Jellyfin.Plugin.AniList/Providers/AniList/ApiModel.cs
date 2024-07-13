@@ -182,7 +182,8 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             List<string> results = new List<string>();
             foreach (Studio node in this.studios.nodes)
             {
-                results.Add(node.name);
+                if (node.isAnimationStudio)
+                    results.Add(node.name);
             }
             return results;
         }
