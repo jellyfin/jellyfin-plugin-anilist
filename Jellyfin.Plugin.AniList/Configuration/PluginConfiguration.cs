@@ -45,6 +45,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             AniDbReplaceGraves = true;
             AniListShowSpoilerTags = true;
             UseAnitomyLibrary = false;
+            OnlyAnimationStudios = false;
         }
 
         public TitlePreferenceType TitlePreference { get; set; }
@@ -67,5 +68,6 @@ namespace Jellyfin.Plugin.AniList.Configuration
 
         public bool UseAnitomyLibrary { get; set; }
 
+        public bool OnlyAnimationStudios { get; set; }
     }
 }

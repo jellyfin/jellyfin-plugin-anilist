@@ -162,11 +162,22 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         public List<string> GetStudioNames()
         {
+            PluginConfiguration config = Plugin.Instance.Configuration;
+
             List<string> results = new List<string>();
             foreach (Studio node in this.studios.nodes)
             {
-                if (node.isAnimationStudio)
+                if (config.OnlyAnimationStudios)
+                {
+                    if (node.isAnimationStudio)
+                    {
+                        results.Add(node.name);
+                    }
+                }
+                else
+                {
                     results.Add(node.name);
+                }
             }
             return results;
         }
