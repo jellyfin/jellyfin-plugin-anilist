@@ -212,7 +212,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     Variables = new Dictionary<string, string> {{"id", id}},
                 },
                 cancellationToken
-            );
+            ).ConfigureAwait(false);
 
             return result.data?.Media;
         }
@@ -225,7 +225,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         public async Task<MediaSearchResult> Search_GetSeries(string title, CancellationToken cancellationToken)
         {
-            return (await Search_GetSeries_list(title, cancellationToken)).FirstOrDefault();
+            return (await Search_GetSeries_list(title, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     Variables = new Dictionary<string, string> {{"query", title}},
                 },
                 cancellationToken
-            );
+            ).ConfigureAwait(false);
 
             return result.data.Page.media;
         }
@@ -260,7 +260,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 return result.id.ToString();
             }
 
-            result = await Search_GetSeries(await Equals_check.Clear_name(title, cancellationToken), cancellationToken);
+            result = await Search_GetSeries(await Equals_check.Clear_name(title, cancellationToken), cancellationToken).ConfigureAwait(false);
             if (result != null)
             {
                 return result.id.ToString();
@@ -277,7 +277,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     Variables = new Dictionary<string, string> {{"id", id.ToString()}},
                 },
                 cancellationToken
-            );
+            ).ConfigureAwait(false);
 
             return result.data?.Staff;
         }
@@ -290,7 +290,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     Variables = new Dictionary<string, string> {{"query", query}},
                 },
                 cancellationToken
-            );
+            ).ConfigureAwait(false);
 
             return result.data?.Page.staff;
         }

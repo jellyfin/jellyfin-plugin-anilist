@@ -31,17 +31,20 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             var results = new List<RemoteImageInfo>();
 
             if (!item.TryGetProviderId(ProviderNames.AniList, out string stringId)
-                || !int.TryParse(stringId, out int id)) {
+                || !int.TryParse(stringId, out int id))
+            {
                 return results;
             }
 
-            Staff staff = await _aniListApi.GetStaff(id, cancellationToken);
-            if (staff == null) {
+            Staff staff = await _aniListApi.GetStaff(id, cancellationToken).ConfigureAwait(false);
+            if (staff == null)
+            {
                 return results;
             }
 
             string imageUrl = staff.image.GetBestImage();
-            if (string.IsNullOrEmpty(imageUrl)) {
+            if (string.IsNullOrEmpty(imageUrl))
+            {
                 return results;
             }
 
@@ -56,7 +59,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            var httpClient = Plugin.Instance.GetHttpClient();
+            using var httpClient = Plugin.Instance.GetHttpClient();
             return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }

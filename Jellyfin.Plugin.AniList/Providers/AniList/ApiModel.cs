@@ -32,8 +32,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public int? month { get; set; }
         public int? day { get; set; }
 
-        public DateTime? ToDateTime() {
-            if (this.day == null || this.month == null || this.year == null) {
+        public DateTime? ToDateTime()
+        {
+            if (this.day == null || this.month == null || this.year == null)
+            {
                 return null;
             }
 
@@ -181,13 +183,16 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             {
                 foreach (Staff va in edge.voiceActors)
                 {
-                    if (config.PersonLanguageFilterPreference != LanguageFilterType.All) {
+                    if (config.PersonLanguageFilterPreference != LanguageFilterType.All)
+                    {
                         if (config.PersonLanguageFilterPreference == LanguageFilterType.Japanese
-                            && !va.language.Equals("Japanese", StringComparison.InvariantCultureIgnoreCase)) {
+                            && !va.language.Equals("Japanese", StringComparison.InvariantCultureIgnoreCase))
+                        {
                             continue;
                         }
                         if (config.PersonLanguageFilterPreference == LanguageFilterType.Localized
-                            && va.language.Equals("Japanese", StringComparison.InvariantCultureIgnoreCase)) {
+                            && va.language.Equals("Japanese", StringComparison.InvariantCultureIgnoreCase))
+                        {
                             continue;
                         }
                     }
@@ -324,19 +329,23 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public string medium { get; set; }
         public string large { get; set; }
 
-        public string GetBestImage() {
-            if (IsValidImage(this.large)) {
+        public string GetBestImage()
+        {
+            if (IsValidImage(this.large))
+            {
                 return this.large;
             }
 
-            if (IsValidImage(this.medium)) {
+            if (IsValidImage(this.medium))
+            {
                 return this.medium;
             }
 
             return null;
         }
 
-        private static bool IsValidImage(string imageUrl) {
+        private static bool IsValidImage(string imageUrl)
+        {
             // Filter out the default "No image" picture.
             return !string.IsNullOrEmpty(imageUrl) && !imageUrl.EndsWith("default.jpg");
         }
@@ -368,7 +377,8 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public FuzzyDate dateOfDeath { get; set; }
         public string homeTown { get; set; }
 
-        public Person ToPerson() {
+        public Person ToPerson()
+        {
             Person person = new Person {
                 Name = this.name.full,
                 OriginalTitle = this.name.native,
@@ -378,14 +388,16 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
             };
 
-            if (!string.IsNullOrWhiteSpace(this.homeTown)) {
+            if (!string.IsNullOrWhiteSpace(this.homeTown))
+            {
                 person.ProductionLocations = new[] { this.homeTown };
             }
 
             return person;
         }
 
-        public RemoteSearchResult ToSearchResult() {
+        public RemoteSearchResult ToSearchResult()
+        {
             return new RemoteSearchResult() {
                 SearchProviderName = ProviderNames.AniList,
                 Name = this.name.full,

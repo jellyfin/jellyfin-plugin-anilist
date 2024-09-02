@@ -12,7 +12,6 @@ using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
 
 
-//API v2
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     public class AniListPersonProvider : IRemoteMetadataProvider<Person, PersonLookupInfo>, IHasOrder
@@ -35,9 +34,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             var result = new MetadataResult<Person>();
 
             int anilistId = int.Parse(info.GetProviderId(ProviderNames.AniList));
-            Staff staff = await _aniListApi.GetStaff(anilistId, cancellationToken);
+            Staff staff = await _aniListApi.GetStaff(anilistId, cancellationToken).ConfigureAwait(false);
 
-            if (staff == null) {
+            if (staff == null)
+            {
                 return result;
             }
 
@@ -48,13 +48,13 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<IEnumerable<RemoteSearchResult>> GetSearchResults(PersonLookupInfo searchInfo, CancellationToken cancellationToken)
         {
-            return (await _aniListApi.SearchStaff(searchInfo.Name, cancellationToken))
+            return (await _aniListApi.SearchStaff(searchInfo.Name, cancellationToken).ConfigureAwait(false))
                 .Select(s => s.ToSearchResult());
         }
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            var httpClient = Plugin.Instance.GetHttpClient();
+            using var httpClient = Plugin.Instance.GetHttpClient();
             return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }

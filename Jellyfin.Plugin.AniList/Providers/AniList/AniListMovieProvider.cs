@@ -43,7 +43,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             var aid = info.ProviderIds.GetOrDefault(ProviderNames.AniList);
             if (!string.IsNullOrEmpty(aid))
             {
-                media = await _aniListApi.GetAnime(aid, cancellationToken);
+                media = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
             }
             else
             {
@@ -54,10 +54,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     searchName = Anitomy.AnitomyHelper.ExtractAnimeTitle(searchName);
                     searchName = AnilistSearchHelper.PreprocessTitle(searchName);
                     _log.LogInformation("Start AniList... Searching({Name})", searchName);
-                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
+                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken).ConfigureAwait(false);
                     if (msr != null)
                     {
-                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken);
+                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken).ConfigureAwait(false);
                     }
                 }
                 if(!config.UseAnitomyLibrary || media == null)
@@ -65,10 +65,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     searchName = info.Name;
                     searchName = AnilistSearchHelper.PreprocessTitle(searchName);
                     _log.LogInformation("Start AniList... Searching({Name})", searchName);
-                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
+                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken).ConfigureAwait(false);
                     if (msr != null)
                     {
-                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken);
+                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -112,7 +112,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            var httpClient = Plugin.Instance.GetHttpClient();
+            using var httpClient = Plugin.Instance.GetHttpClient();
             return await httpClient.GetAsync(url).ConfigureAwait(false);
         }
     }
