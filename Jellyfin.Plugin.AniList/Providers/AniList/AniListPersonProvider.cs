@@ -33,7 +33,12 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             var result = new MetadataResult<Person>();
 
-            int anilistId = int.Parse(info.GetProviderId(ProviderNames.AniList));
+            if (!info.TryGetProviderId(ProviderNames.AniList, out string stringId)
+                || !int.TryParse(stringId, out int anilistId))
+            {
+                return result;
+            }
+
             Staff staff = await _aniListApi.GetStaff(anilistId, cancellationToken).ConfigureAwait(false);
 
             if (staff == null)

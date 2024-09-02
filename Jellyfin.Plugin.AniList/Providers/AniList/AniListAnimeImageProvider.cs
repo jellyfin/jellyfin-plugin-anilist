@@ -44,7 +44,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
             if (!string.IsNullOrEmpty(aid))
             {
-                Media media = await _aniListApi.GetAnime(aid, cancellationToken);
+                Media media = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
                 if (media != null)
                 {
                     if (media.GetImageUrl() != null)
