@@ -73,8 +73,8 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            using var httpClient = Plugin.Instance.GetHttpClient();
-            return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            var httpClient = Plugin.Instance.GetHttpClient();
+            return await httpClient.GetAsync(url).ConfigureAwait(false);
         }
     }
 }

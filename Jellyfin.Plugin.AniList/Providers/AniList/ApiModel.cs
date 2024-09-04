@@ -186,12 +186,12 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     if (config.PersonLanguageFilterPreference != LanguageFilterType.All)
                     {
                         if (config.PersonLanguageFilterPreference == LanguageFilterType.Japanese
-                            && !va.language.Equals("Japanese", StringComparison.InvariantCultureIgnoreCase))
+                            && !va.language.Equals("Japanese", StringComparison.OrdinalIgnoreCase))
                         {
                             continue;
                         }
                         if (config.PersonLanguageFilterPreference == LanguageFilterType.Localized
-                            && va.language.Equals("Japanese", StringComparison.InvariantCultureIgnoreCase))
+                            && va.language.Equals("Japanese", StringComparison.OrdinalIgnoreCase))
                         {
                             continue;
                         }
