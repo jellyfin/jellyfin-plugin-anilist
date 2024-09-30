@@ -40,7 +40,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             var aid = info.ProviderIds.GetOrDefault(ProviderNames.AniList);
             if (!string.IsNullOrEmpty(aid))
             {
-                media = await _aniListApi.GetAnime(aid);
+                media = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
             }
             else
             {
@@ -52,10 +52,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     //todo Add episode/season?
                     searchName = AnilistSearchHelper.PreprocessTitle(searchName);
                     _log.LogInformation("Start AniList... Searching({Name})", searchName);
-                     msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
+                     msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken).ConfigureAwait(false);
                     if (msr != null)
                     {
-                        media = await _aniListApi.GetAnime(msr.id.ToString());
+                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken).ConfigureAwait(false);
                     }
                 }
                 if(!config.UseAnitomyLibrary || media == null)
@@ -63,10 +63,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                     searchName = info.Name;
                     searchName = AnilistSearchHelper.PreprocessTitle(searchName);
                     _log.LogInformation("Start AniList... Searching({Name})", searchName);
-                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken);
+                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken).ConfigureAwait(false);
                     if (msr != null)
                     {
-                        media = await _aniListApi.GetAnime(msr.id.ToString());
+                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -89,7 +89,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             var aid = searchInfo.ProviderIds.GetOrDefault(ProviderNames.AniList);
             if (!string.IsNullOrEmpty(aid))
             {
-                Media aid_result = await _aniListApi.GetAnime(aid).ConfigureAwait(false);
+                Media aid_result = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
                 if (aid_result != null)
                 {
                     results.Add(aid_result.ToSearchResult());
@@ -111,7 +111,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             var httpClient = Plugin.Instance.GetHttpClient();
-
             return await httpClient.GetAsync(url).ConfigureAwait(false);
         }
     }
