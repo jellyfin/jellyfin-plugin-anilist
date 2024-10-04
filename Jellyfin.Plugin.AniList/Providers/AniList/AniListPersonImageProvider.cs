@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,15 +9,9 @@ using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    public class AniListPersonImageProvider : IRemoteImageProvider
+    public class AniListPersonImageProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory) : IRemoteImageProvider
     {
         private readonly ImageType[] supportedTypes = { ImageType.Primary };
-        private readonly AniListApi _aniListApi;
-
-        public AniListPersonImageProvider()
-        {
-            _aniListApi = new AniListApi();
-        }
 
         public string Name => "AniList";
 
@@ -36,7 +29,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 return results;
             }
 
-            Staff staff = await _aniListApi.GetStaff(id, cancellationToken).ConfigureAwait(false);
+            Staff staff = await aniListApi.GetStaff(id, cancellationToken).ConfigureAwait(false);
             if (staff == null)
             {
                 return results;
@@ -59,7 +52,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            var httpClient = Plugin.Instance.GetHttpClient();
+            var httpClient = httpClientFactory.CreateClient();
             return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }

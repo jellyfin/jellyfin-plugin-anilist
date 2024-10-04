@@ -1,28 +1,19 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
+using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    public class AniListAnimeImageProvider : IRemoteImageProvider
+    public class AniListAnimeImageProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory) : IRemoteImageProvider
     {
-        private readonly AniListApi _aniListApi;
-        public AniListAnimeImageProvider()
-        {
-            _aniListApi = new AniListApi();
-        }
-
         public string Name => "AniList";
 
         public bool Supports(BaseItem item) => item is Series || item is Season || item is Movie;
@@ -44,7 +35,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
             if (!string.IsNullOrEmpty(aid))
             {
-                Media media = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
+                Media media = await aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
                 if (media != null)
                 {
                     if (media.GetImageUrl() != null)
@@ -73,8 +64,8 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            var httpClient = Plugin.Instance.GetHttpClient();
-            return await httpClient.GetAsync(url).ConfigureAwait(false);
+            HttpClient httpClient = httpClientFactory.CreateClient();
+            return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }
 }
