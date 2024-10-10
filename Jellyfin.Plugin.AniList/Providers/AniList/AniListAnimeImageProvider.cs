@@ -15,10 +15,10 @@ using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    public class AniListImageProvider : IRemoteImageProvider
+    public class AniListAnimeImageProvider : IRemoteImageProvider
     {
         private readonly AniListApi _aniListApi;
-        public AniListImageProvider()
+        public AniListAnimeImageProvider()
         {
             _aniListApi = new AniListApi();
         }
@@ -44,7 +44,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
             if (!string.IsNullOrEmpty(aid))
             {
-                Media media = await _aniListApi.GetAnime(aid);
+                Media media = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
                 if (media != null)
                 {
                     if (media.GetImageUrl() != null)
@@ -74,7 +74,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             var httpClient = Plugin.Instance.GetHttpClient();
-
             return await httpClient.GetAsync(url).ConfigureAwait(false);
         }
     }

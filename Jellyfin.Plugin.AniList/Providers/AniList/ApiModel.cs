@@ -1,9 +1,8 @@
 ﻿﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using Jellyfin.Data.Enums;
+using System.Text.Json.Serialization;
 using MediaBrowser.Model.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Controller.Entities;
@@ -13,8 +12,6 @@ using Jellyfin.Plugin.AniList.Configuration;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    using System.Collections.Generic;
-
     public class Title
     {
         public string romaji { get; set; }
@@ -29,22 +26,34 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public string extraLarge { get; set; }
     }
 
-    public class ApiDate
+    public class FuzzyDate
     {
         public int? year { get; set; }
         public int? month { get; set; }
         public int? day { get; set; }
+
+        public DateTime? ToDateTime()
+        {
+            if (this.day == null || this.month == null || this.year == null)
+            {
+                return null;
+            }
+
+            return new DateTime(this.year.Value, this.month.Value, this.day.Value);
+        }
     }
 
     public class Page
     {
         public List<MediaSearchResult> media { get; set; }
+        public List<Staff> staff { get; set; }
     }
 
     public class Data
     {
         public Page Page { get; set; }
         public Media Media { get; set; }
+        public Staff Staff { get; set; }
     }
 
     /// <summary>
@@ -55,7 +64,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
     {
         public int id { get; set; }
         public Title title { get; set; }
-        public ApiDate startDate { get; set; }
+        public FuzzyDate startDate { get; set; }
         public CoverImage coverImage { get; set; }
 
         /// <summary>
@@ -94,19 +103,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         }
 
         /// <summary>
-        /// Returns the start date as a DateTime object or null if not available
-        /// </summary>
-        /// <returns></returns>
-        public DateTime? GetStartDate()
-        {
-            if (this.startDate.year == null || this.startDate.month == null || this.startDate.day == null)
-            {
-                return null;
-            }
-            return new DateTime(this.startDate.year.Value, this.startDate.month.Value, this.startDate.day.Value);
-        }
-
-        /// <summary>
         /// Convert a Media/MediaSearchResult object to a RemoteSearchResult
         /// </summary>
         /// <returns></returns>
@@ -117,7 +113,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             {
                 Name = this.GetPreferredTitle(config.TitlePreference, "en"),
                 ProductionYear = this.startDate.year,
-                PremiereDate = this.GetStartDate(),
+                PremiereDate = this.startDate?.ToDateTime(),
                 ImageUrl = this.GetImageUrl(),
                 SearchProviderName = ProviderNames.AniList,
                 ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
@@ -125,15 +121,15 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         }
     }
 
-    public class Media: MediaSearchResult
+    public class Media : MediaSearchResult
     {
         public int? averageScore { get; set; }
         public string bannerImage { get; set; }
         public object chapters { get; set; }
-        public Characters characters { get; set; }
+        public CharacterConnection characters { get; set; }
         public string description { get; set; }
         public int? duration { get; set; }
-        public ApiDate endDate { get; set; }
+        public FuzzyDate endDate { get; set; }
         public int? episodes { get; set; }
         public string format { get; set; }
         public List<string> genres { get; set; }
@@ -158,19 +154,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public float GetRating()
         {
             return (this.averageScore ?? 0) / 10f;
-        }
-
-        /// <summary>
-        /// Returns the end date as a DateTime object or null if not available
-        /// </summary>
-        /// <returns></returns>
-        public DateTime? GetEndDate()
-        {
-            if (this.endDate.year == null || this.endDate.month == null || this.endDate.day == null)
-            {
-                return null;
-            }
-            return new DateTime(this.endDate.year.Value, this.endDate.month.Value, this.endDate.day.Value);
         }
 
         /// <summary>
@@ -207,24 +190,31 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             PluginConfiguration config = Plugin.Instance.Configuration;
             List<PersonInfo> lpi = new List<PersonInfo>();
+
             foreach (CharacterEdge edge in this.characters.edges)
             {
-                foreach (VoiceActor va in edge.voiceActors)
+                foreach (Staff va in edge.voiceActors)
                 {
-                    if (config.PersonLanguageFilterPreference != LanguageFilterType.All) {
-                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Japanese && va.language != "Japanese") {
+                    if (config.PersonLanguageFilterPreference != LanguageFilterType.All)
+                    {
+                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Japanese
+                            && !va.language.Equals("Japanese", StringComparison.OrdinalIgnoreCase))
+                        {
                             continue;
                         }
-                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Localized && va.language == "Japanese") {
+                        if (config.PersonLanguageFilterPreference == LanguageFilterType.Localized
+                            && va.language.Equals("Japanese", StringComparison.OrdinalIgnoreCase))
+                        {
                             continue;
                         }
                     }
+
                     PeopleHelper.AddPerson(lpi, new PersonInfo {
                         Name = va.name.full,
-                        ImageUrl = va.image.large ?? va.image.medium,
+                        ImageUrl = va.image.GetBestImage(),
                         Role = edge.node.name.full,
                         Type = PersonKind.Actor,
-                        ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
+                        ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, va.id.ToString()}},
                     });
                 }
             }
@@ -283,10 +273,10 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 OriginalTitle = this.GetPreferredTitle(config.OriginalTitlePreference, "en"),
                 Overview = this.description,
                 ProductionYear = this.startDate.year,
-                PremiereDate = this.GetStartDate(),
-                EndDate = this.GetStartDate(),
+                PremiereDate = this.startDate?.ToDateTime(),
+                EndDate = this.endDate?.ToDateTime(),
                 CommunityRating = this.GetRating(),
-                RunTimeTicks = this.duration.HasValue ? TimeSpan.FromMinutes(this.duration.Value).Ticks : (long?)null,
+                RunTimeTicks = this.duration.HasValue ? TimeSpan.FromMinutes(this.duration.Value).Ticks : null,
                 Genres = this.GetGenres().ToArray(),
                 Tags = this.GetTagNames().ToArray(),
                 Studios = this.GetStudioNames().ToArray(),
@@ -321,8 +311,8 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 OriginalTitle = this.GetPreferredTitle(config.OriginalTitlePreference, "en"),
                 Overview = this.description,
                 ProductionYear = this.startDate.year,
-                PremiereDate = this.GetStartDate(),
-                EndDate = this.GetStartDate(),
+                PremiereDate = this.startDate?.ToDateTime(),
+                EndDate = this.endDate?.ToDateTime(),
                 CommunityRating = this.GetRating(),
                 Genres = this.GetGenres().ToArray(),
                 Tags = this.GetTagNames().ToArray(),
@@ -350,16 +340,37 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
     {
         public string medium { get; set; }
         public string large { get; set; }
+
+        public string GetBestImage()
+        {
+            if (IsValidImage(this.large))
+            {
+                return this.large;
+            }
+
+            if (IsValidImage(this.medium))
+            {
+                return this.medium;
+            }
+
+            return null;
+        }
+
+        private static bool IsValidImage(string imageUrl)
+        {
+            // Filter out the default "No image" picture.
+            return !string.IsNullOrEmpty(imageUrl) && !imageUrl.EndsWith("default.jpg");
+        }
     }
 
     public class Character
     {
         public int id { get; set; }
-        public Name2 name { get; set; }
+        public CharacterName name { get; set; }
         public Image image { get; set; }
     }
 
-    public class Name2
+    public class CharacterName
     {
         public string first { get; set; }
         public string last { get; set; }
@@ -367,22 +378,63 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public string native { get; set; }
     }
 
-    public class VoiceActor
+    public class Staff
     {
         public int id { get; set; }
-        public Name2 name { get; set; }
-        public Image image { get; set; }
+        public StaffName name { get; set; }
         public string language { get; set; }
+        public Image image { get; set; }
+        public string description { get; set; }
+        public FuzzyDate dateOfBirth { get; set; }
+        public FuzzyDate dateOfDeath { get; set; }
+        public string homeTown { get; set; }
+
+        public Person ToPerson()
+        {
+            Person person = new Person {
+                Name = this.name.full,
+                OriginalTitle = this.name.native,
+                Overview = this.description,
+                PremiereDate = this.dateOfBirth?.ToDateTime(),
+                EndDate = this.dateOfDeath?.ToDateTime(),
+                ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
+            };
+
+            if (!string.IsNullOrWhiteSpace(this.homeTown))
+            {
+                person.ProductionLocations = new[] { this.homeTown };
+            }
+
+            return person;
+        }
+
+        public RemoteSearchResult ToSearchResult()
+        {
+            return new RemoteSearchResult() {
+                SearchProviderName = ProviderNames.AniList,
+                Name = this.name.full,
+                ImageUrl = this.image.GetBestImage(),
+                ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, this.id.ToString()}}
+            };
+        }
+    }
+
+    public class StaffName
+    {
+        public string first { get; set; }
+        public string last { get; set; }
+        public string full { get; set; }
+        public string native { get; set; }
     }
 
     public class CharacterEdge
     {
         public Character node { get; set; }
         public string role { get; set; }
-        public List<VoiceActor> voiceActors { get; set; }
+        public List<Staff> voiceActors { get; set; }
     }
 
-    public class Characters
+    public class CharacterConnection
     {
         public List<CharacterEdge> edges { get; set; }
     }
