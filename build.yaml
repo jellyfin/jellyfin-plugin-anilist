@@ -1,8 +1,8 @@
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 imageUrl: "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-anilist.png"
-version: 9
-targetAbi: "10.9.0.0"
+version: 10
+targetAbi: "10.10.0.0"
 framework: "net8.0"
 owner: "jellyfin"
 overview: "AniList metadata provider"
@@ -13,8 +13,7 @@ category: "Metadata"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |-
-  - Limit amount of people in metadata search result (#68) @AkaTenshi
-  - Feature: Decouples VA filter from the title language, and moves to the new Anilist StaffLanguage API key (#65) @mmshivesh
+  - Support for retreiving Person metadata (#75) @HansLehnert
 
   ### Dependency updates ###
-  - Update dependency AnitomySharp.NET6 to v0.5.1 (#64) @renovate
+  - Update dotnet monorepo to 8.0.1 (#80) @renovate
