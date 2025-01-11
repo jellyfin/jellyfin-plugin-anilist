@@ -165,11 +165,18 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             PluginConfiguration config = Plugin.Instance.Configuration;
 
             List<string> results = new List<string>();
-            foreach (Studio node in this.studios.nodes)
+            foreach (StudioEdge edge in this.studios.edges)
             {
-                if (!config.OnlyAnimationStudios || node.isAnimationStudio)
+                if (
+                  !results.Contains(edge.node.name) &&
+                  (
+                    config.StudioFilterPreference == StudioFilterType.All ||
+                    (config.StudioFilterPreference == StudioFilterType.MainOnly && edge.isMain) ||
+                    (config.StudioFilterPreference == StudioFilterType.AnimationStudioOnly && edge.node.isAnimationStudio)
+                  )
+                )
                 {
-                    results.Add(node.name);
+                    results.Add(edge.node.name);
                 }
             }
             return results;
@@ -448,9 +455,15 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public bool isAnimationStudio { get; set; }
     }
 
+    public class StudioEdge
+    {
+        public Studio node { get; set; }
+        public bool isMain { get; set; }
+    }
+
     public class StudioConnection
     {
-        public List<Studio> nodes { get; set; }
+        public List<StudioEdge> edges { get; set; }
     }
 
     public class RootObject

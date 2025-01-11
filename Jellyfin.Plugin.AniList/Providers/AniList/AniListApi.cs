@@ -100,10 +100,13 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 }
 
                 studios {
-                  nodes {
-                    id
-                    name
-                    isAnimationStudio
+                  edges {
+                    node {
+                      id
+                      name
+                      isAnimationStudio
+                    }
+                    isMain
                   }
                 }
                 characters(sort: [ROLE, FAVOURITES_DESC]) {
