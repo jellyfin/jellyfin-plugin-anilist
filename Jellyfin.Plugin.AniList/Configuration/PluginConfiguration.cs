@@ -31,6 +31,12 @@ namespace Jellyfin.Plugin.AniList.Configuration
         All
     }
 
+    public enum StudioFilterType {
+        MainOnly,
+        AnimationStudioOnly,
+        All
+    }
+
     public class PluginConfiguration : BasePluginConfiguration
     {
         public PluginConfiguration()
@@ -41,6 +47,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             MaxPeople = 0;
             MaxGenres = 5;
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
+            StudioFilterPreference = StudioFilterType.All;
             AniDbRateLimit = 2000;
             AniDbReplaceGraves = true;
             AniListShowSpoilerTags = true;
@@ -57,6 +64,8 @@ namespace Jellyfin.Plugin.AniList.Configuration
 
         public int MaxGenres { get; set; }
 
+        public StudioFilterType StudioFilterPreference { get; set; }
+
         public AnimeDefaultGenreType AnimeDefaultGenre { get; set; }
 
         public int AniDbRateLimit { get; set; }
@@ -66,6 +75,5 @@ namespace Jellyfin.Plugin.AniList.Configuration
         public bool AniListShowSpoilerTags { get; set; }
 
         public bool UseAnitomyLibrary { get; set; }
-
     }
 }

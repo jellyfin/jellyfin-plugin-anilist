@@ -46,6 +46,15 @@
                             <div class="fieldDescription">Set this to zero to remove any limit.</div>
                         </div>
                         <div class="selectContainer">
+                            <label class="selectLabel" for="filterStudio">Filter Studio Preference</label>
+                            <select is="emby-select" id="filterStudio" name="filterStudio" class="emby-select-withcolor emby-select">
+                                <option id="optStudioAll" value="All">Do not filter</option>
+                                <option id="optStudioMain" value="MainOnly">Keep main studio</option>
+                                <option id="optStudioAnimationStudio" value="AnimationStudioOnly">Keep all animation studios</option>
+                            </select>
+                            <div class="fieldDescription">This setting will change how studios are filtered. Sometimes the main studio is not an animation studio so keeping only animation studios might result in no studios being kept.</div>
+                        </div>
+                        <div class="selectContainer">
                             <label class="selectLabel" for="animeDefaultGenre">Anime Default Genre Name</label>
                             <select is="emby-select" id="animeDefaultGenre" name="animeDefaultGenre" class="emby-select-withcolor emby-select">
                                 <option id="optDefaultGenreNone" value="None">None</option>
@@ -98,6 +107,7 @@
                             document.getElementById('filterPeopleByLanguage').value = config.PersonLanguageFilterPreference;
                             document.getElementById('chkMaxPeople').value = config.MaxPeople;
                             document.getElementById('chkMaxGenres').value = config.MaxGenres;
+                            document.getElementById('filterStudio').value = config.StudioFilterPreference;
                             document.getElementById('animeDefaultGenre').value = config.AnimeDefaultGenre;
                             document.getElementById('chkAniDbRateLimit').value = config.AniDbRateLimit;
                             document.getElementById('chkAniDbReplaceGraves').checked = config.AniDbReplaceGraves;
@@ -117,6 +127,7 @@
                             config.PersonLanguageFilterPreference = document.getElementById('filterPeopleByLanguage').value;
                             config.MaxPeople = document.getElementById('chkMaxPeople').value;
                             config.MaxGenres = document.getElementById('chkMaxGenres').value;
+                            config.StudioFilterPreference = document.getElementById('filterStudio').value;
                             config.AnimeDefaultGenre = document.getElementById('animeDefaultGenre').value;
                             config.AniDbRateLimit = document.getElementById('chkAniDbRateLimit').value;
                             config.AniDbReplaceGraves = document.getElementById('chkAniDbReplaceGraves').checked;
