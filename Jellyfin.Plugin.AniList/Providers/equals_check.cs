@@ -1,5 +1,8 @@
-﻿using System;
+﻿#pragma warning disable CA1851 // Possible multiple enumerations of 'IEnumerable' collection
+
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -9,8 +12,23 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.AniList.Providers
 {
-    internal class Equals_check
+    internal partial class Equals_check
     {
+        [GeneratedRegex(@"(?s)(S[0-9]+)")]
+        private static partial Regex CleanSeasonRegex();
+
+        [GeneratedRegex(@"(?s)S([0-9]+)")]
+        private static partial Regex CleanSeasonRegex2();
+
+        [GeneratedRegex(@"((.*)s([0 - 9]))")]
+        private static partial Regex CleanSeasonRegex3();
+
+        [GeneratedRegex(@"(?s) \(.*?\)")]
+        private static partial Regex CleanRegex();
+
+        [GeneratedRegex(@"(?s)\(.*?\)")]
+        private static partial Regex CleanRegex2();
+
         public readonly ILogger<Equals_check> _logger;
 
         public Equals_check(ILogger<Equals_check> logger)
@@ -23,24 +41,24 @@ namespace Jellyfin.Plugin.AniList.Providers
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public async static Task<string> Clear_name(string a, CancellationToken cancellationToken)
+        public static async Task<string> Clear_name(string a, CancellationToken cancellationToken)
         {
             try
             {
-                a = a.Trim().Replace(await One_line_regex(new Regex(@"(?s) \(.*?\)"), a.Trim(), cancellationToken, 0), "");
+                a = a.Trim().Replace(await One_line_regex(CleanRegex(), a.Trim(), cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception)
             { }
-            a = a.Replace(".", " ");
-            a = a.Replace("-", " ");
-            a = a.Replace("`", "");
-            a = a.Replace("'", "");
-            a = a.Replace("&", "and");
-            a = a.Replace("(", "");
-            a = a.Replace(")", "");
+            a = a.Replace(".", " ", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("-", " ", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("`", "", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("'", "", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("&", "and", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("(", "", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace(")", "", StringComparison.OrdinalIgnoreCase);
             try
             {
-                a = a.Replace(await One_line_regex(new Regex(@"(?s)(S[0-9]+)"), a.Trim(), cancellationToken), await One_line_regex(new Regex(@"(?s)S([0-9]+)"), a.Trim(), cancellationToken));
+                a = a.Replace(await One_line_regex(CleanSeasonRegex(), a.Trim(), cancellationToken), await One_line_regex(CleanSeasonRegex2(), a.Trim(), cancellationToken), StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception)
             {
@@ -54,28 +72,34 @@ namespace Jellyfin.Plugin.AniList.Providers
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public async static Task<string> Clear_name_step2(string a, CancellationToken cancellationToken)
+        public static async Task<string> Clear_name_step2(string a, CancellationToken cancellationToken)
         {
-            if(a.Contains("Gekijyouban"))
-               a= (a.Replace("Gekijyouban", "") + " Movie").Trim();
-            if (a.Contains("gekijyouban"))
-               a = (a.Replace("gekijyouban", "") + " Movie").Trim();
+            if (a.Contains("Gekijyouban", StringComparison.OrdinalIgnoreCase))
+            {
+                a = (a.Replace("Gekijyouban", "", StringComparison.OrdinalIgnoreCase) + " Movie").Trim();
+            }
+
+            if (a.Contains("gekijyouban", StringComparison.OrdinalIgnoreCase))
+            {
+                a = (a.Replace("gekijyouban", "", StringComparison.OrdinalIgnoreCase) + " Movie").Trim();
+            }
+
             try
             {
-                a = a.Trim().Replace(await One_line_regex(new Regex(@"(?s) \(.*?\)"), a.Trim(), cancellationToken, 0), "");
+                a = a.Trim().Replace(await One_line_regex(CleanRegex(), a.Trim(), cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception)
             { }
-            a = a.Replace(".", " ");
-            a = a.Replace("-", " ");
-            a = a.Replace("`", "");
-            a = a.Replace("'", "");
-            a = a.Replace("&", "and");
-            a = a.Replace(":", "");
-            a = a.Replace("␣", "");
-            a = a.Replace("2wei", "zwei");
-            a = a.Replace("3rei", "drei");
-            a = a.Replace("4ier", "vier");
+            a = a.Replace(".", " ", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("-", " ", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("`", "", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("'", "", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("&", "and", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace(":", "", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("␣", "", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("2wei", "zwei", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("3rei", "drei", StringComparison.OrdinalIgnoreCase);
+            a = a.Replace("4ier", "vier", StringComparison.OrdinalIgnoreCase);
             return a;
         }
 
@@ -85,15 +109,18 @@ namespace Jellyfin.Plugin.AniList.Providers
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public async static Task<bool> Compare_strings(string a, string b, CancellationToken cancellationToken)
+        public static async Task<bool> Compare_strings(string a, string b, CancellationToken cancellationToken)
         {
             if (!string.IsNullOrEmpty(a) && !string.IsNullOrEmpty(b))
             {
                 if (await Simple_compare(a, b, cancellationToken))
+                {
                     return true;
+                }
 
                 return false;
             }
+
             return false;
         }
 
@@ -104,7 +131,7 @@ namespace Jellyfin.Plugin.AniList.Providers
         /// <param name="min_lenght"></param>
         /// <param name="p"></param>
         /// <returns></returns>
-        public async static Task<string> Half_string(string string_, CancellationToken cancellationToken, int min_lenght = 0, int p = 50)
+        public static async Task<string> Half_string(string string_, CancellationToken cancellationToken, int min_lenght = 0, int p = 50)
         {
             decimal length = 0;
             if (await Task.Run(() => ((int)((decimal)string_.Length - (((decimal)string_.Length / 100m) * (decimal)p)) > min_lenght), cancellationToken))
@@ -122,6 +149,7 @@ namespace Jellyfin.Plugin.AniList.Providers
                     length = min_lenght;
                 }
             }
+
             return string_.Substring(0, (int)length);
         }
 
@@ -133,7 +161,7 @@ namespace Jellyfin.Plugin.AniList.Providers
         /// <param name="group"></param>
         /// <param name="match_int"></param>
         /// <returns></returns>
-        public async static Task<string> One_line_regex(Regex regex, string match, CancellationToken cancellationToken, int group = 1, int match_int = 0)
+        public static async Task<string> One_line_regex(Regex regex, string match, CancellationToken cancellationToken, int group = 1, int match_int = 0)
         {
             Regex _regex = regex;
             int x = 0;
@@ -143,8 +171,10 @@ namespace Jellyfin.Plugin.AniList.Providers
                 {
                     return await Task.Run(() => _match.Groups[group].Value.ToString(), cancellationToken);
                 }
+
                 x++;
             }
+
             return "";
         }
 
@@ -152,23 +182,25 @@ namespace Jellyfin.Plugin.AniList.Providers
         /// Compare 2 Strings, and it just works
         /// SeriesA S2 == SeriesA Second Season | True;
         /// </summary>
-        private async static Task<bool> Simple_compare(string a, string b, CancellationToken cancellationToken, bool fastmode = false)
+        private static async Task<bool> Simple_compare(string a, string b, CancellationToken cancellationToken, bool fastmode = false)
         {
             if (fastmode)
             {
-                if (a[0] == b[0])
-                {
-                }
-                else
+                if (a[0] != b[0])
                 {
                     return false;
                 }
             }
 
             if (await Core_compare(a, b, cancellationToken))
+            {
                 return true;
+            }
+
             if (await Core_compare(b, a, cancellationToken))
+            {
                 return true;
+            }
 
             return false;
         }
@@ -176,110 +208,173 @@ namespace Jellyfin.Plugin.AniList.Providers
         /// <summary>
         /// Compare 2 Strings, and it just works
         /// </summary>
-        private async static Task<bool> Core_compare(string a, string b, CancellationToken cancellationToken)
+        private static async Task<bool> Core_compare(string a, string b, CancellationToken cancellationToken)
         {
             if (a == b)
+            {
                 return true;
+            }
 
-            a = a.ToLower().Replace(" ", "").Trim().Replace(".", "");
-            b = b.ToLower().Replace(" ", "").Trim().Replace(".", "");
+            a = a.ToLower().Replace(" ", "", StringComparison.OrdinalIgnoreCase).Trim().Replace(".", "", StringComparison.OrdinalIgnoreCase);
+            b = b.ToLower().Replace(" ", "", StringComparison.OrdinalIgnoreCase).Trim().Replace(".", "", StringComparison.OrdinalIgnoreCase);
 
             if (await Clear_name(a, cancellationToken) == await Clear_name(b, cancellationToken))
+            {
                 return true;
+            }
+
             if (await Clear_name_step2(a, cancellationToken) == await Clear_name_step2(b, cancellationToken))
+            {
                 return true;
-            if (a.Replace("-", " ") == b.Replace("-", " "))
+            }
+
+            if (a.Replace("-", " ", StringComparison.OrdinalIgnoreCase) == b.Replace("-", " ", StringComparison.OrdinalIgnoreCase))
+            {
                 return true;
-            if (a.Replace(" 2", ":secondseason") == b.Replace(" 2", ":secondseason"))
+            }
+
+            if (a.Replace(" 2", ":secondseason", StringComparison.OrdinalIgnoreCase) == b.Replace(" 2", ":secondseason", StringComparison.OrdinalIgnoreCase))
+            {
                 return true;
-            if (a.Replace("2", "secondseason") == b.Replace("2", "secondseason"))
+            }
+
+            if (a.Replace("2", "secondseason", StringComparison.OrdinalIgnoreCase) == b.Replace("2", "secondseason", StringComparison.OrdinalIgnoreCase))
+            {
                 return true;
+            }
+
             if (await Convert_symbols_too_numbers(a, "I", cancellationToken) == await Convert_symbols_too_numbers(b, "I", cancellationToken))
+            {
                 return true;
+            }
+
             if (await Convert_symbols_too_numbers(a, "!", cancellationToken) == await Convert_symbols_too_numbers(b, "!", cancellationToken))
+            {
                 return true;
-            if (a.Replace("ndseason", "") == b.Replace("ndseason", ""))
+            }
+
+            if (a.Replace("ndseason", "", StringComparison.OrdinalIgnoreCase) == b.Replace("ndseason", "", StringComparison.OrdinalIgnoreCase))
+            {
                 return true;
-            if (a.Replace("ndseason", "") == b)
+            }
+
+            if (a.Replace("ndseason", "", StringComparison.OrdinalIgnoreCase) == b)
+            {
                 return true;
-            if (await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), a, cancellationToken, 2) + await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), a, cancellationToken, 3) == await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), b, cancellationToken, 2) + await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), b, cancellationToken, 3))
-                if (!string.IsNullOrEmpty(await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), a, cancellationToken, 2) + await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), a, cancellationToken, 3)))
+            }
+
+            if (await One_line_regex(CleanSeasonRegex3(), a, cancellationToken, 2) + await One_line_regex(CleanSeasonRegex3(), a, cancellationToken, 3) == await One_line_regex(CleanSeasonRegex3(), b, cancellationToken, 2) + await One_line_regex(CleanSeasonRegex3(), b, cancellationToken, 3))
+            {
+                if (!string.IsNullOrEmpty(await One_line_regex(CleanSeasonRegex3(), a, cancellationToken, 2) + await One_line_regex(CleanSeasonRegex3(), a, cancellationToken, 3)))
+                {
                     return true;
-            if (await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), a, cancellationToken, 2) + await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), a, cancellationToken, 3) == b)
-                if (!string.IsNullOrEmpty(await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), a, cancellationToken, 2) + await One_line_regex(new Regex(@"((.*)s([0 - 9]))"), a, cancellationToken, 3)))
+                }
+            }
+
+            if (await One_line_regex(CleanSeasonRegex3(), a, cancellationToken, 2) + await One_line_regex(CleanSeasonRegex3(), a, cancellationToken, 3) == b)
+            {
+                if (!string.IsNullOrEmpty(await One_line_regex(CleanSeasonRegex3(), a, cancellationToken, 2) + await One_line_regex(CleanSeasonRegex3(), a, cancellationToken, 3)))
+                {
                     return true;
-            if (a.Replace("rdseason", "") == b.Replace("rdseason", ""))
+                }
+            }
+
+            if (a.Replace("rdseason", "", StringComparison.OrdinalIgnoreCase) == b.Replace("rdseason", "", StringComparison.OrdinalIgnoreCase))
+            {
                 return true;
-            if (a.Replace("rdseason", "") == b)
+            }
+
+            if (a.Replace("rdseason", "", StringComparison.OrdinalIgnoreCase) == b)
+            {
                 return true;
+            }
+
             try
             {
-                if (a.Replace("2", "secondseason").Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), a, cancellationToken, 0), "") == b.Replace("2", "secondseason").Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), b, cancellationToken, 0), ""))
+                if (a.Replace("2", "secondseason", StringComparison.OrdinalIgnoreCase).Replace(await One_line_regex(CleanRegex2(), a, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase) == b.Replace("2", "secondseason", StringComparison.OrdinalIgnoreCase).Replace(await One_line_regex(CleanRegex2(), b, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase))
+                {
                     return true;
+                }
             }
             catch (Exception)
             {
             }
             try
             {
-                if (a.Replace("2", "secondseason").Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), a, cancellationToken, 0), "") == b)
+                if (a.Replace("2", "secondseason", StringComparison.OrdinalIgnoreCase).Replace(await One_line_regex(CleanRegex2(), a, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase) == b)
+                {
                     return true;
+                }
             }
             catch (Exception)
             {
             }
             try
             {
-                if (a.Replace(" 2", ":secondseason").Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), a, cancellationToken, 0), "") == b.Replace(" 2", ":secondseason").Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), b, cancellationToken, 0), ""))
+                if (a.Replace(" 2", ":secondseason", StringComparison.OrdinalIgnoreCase).Replace(await One_line_regex(CleanRegex2(), a, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase) == b.Replace(" 2", ":secondseason", StringComparison.OrdinalIgnoreCase).Replace(await One_line_regex(CleanRegex2(), b, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase))
+                {
                     return true;
+                }
             }
             catch (Exception)
             {
             }
             try
             {
-                if (a.Replace(" 2", ":secondseason").Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), a, cancellationToken, 0), "") == b)
+                if (a.Replace(" 2", ":secondseason", StringComparison.OrdinalIgnoreCase).Replace(await One_line_regex(CleanRegex2(), a, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase) == b)
+                {
                     return true;
+                }
             }
             catch (Exception)
             {
             }
             try
             {
-                if (a.Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), a, cancellationToken, 0), "") == b.Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), b, cancellationToken, 0), ""))
+                if (a.Replace(await One_line_regex(CleanRegex2(), a, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase) == b.Replace(await One_line_regex(CleanRegex2(), b, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase))
+                {
                     return true;
+                }
             }
             catch (Exception)
             {
             }
             try
             {
-                if (a.Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), a, cancellationToken, 0), "") == b)
+                if (a.Replace(await One_line_regex(CleanRegex2(), a, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase) == b)
+                {
                     return true;
+                }
             }
             catch (Exception)
             {
             }
             try
             {
-                if (b.Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), b, cancellationToken, 0), "").Replace("  2", ": second Season") == a)
+                if (b.Replace(await One_line_regex(CleanRegex2(), b, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase).Replace("  2", ": second Season", StringComparison.OrdinalIgnoreCase) == a)
+                {
                     return true;
+                }
             }
             catch (Exception)
             {
             }
             try
             {
-                if (a.Replace(" 2ndseason", ":secondseason") + " vs " + b == a)
+                if (a.Replace(" 2ndseason", ":secondseason", StringComparison.OrdinalIgnoreCase) + " vs " + b == a)
+                {
                     return true;
+                }
             }
             catch (Exception)
             {
             }
             try
             {
-                if (a.Replace(await One_line_regex(new Regex(@"(?s)\(.*?\)"), a, cancellationToken, 0), "").Replace("  2", ":secondseason") == b)
+                if (a.Replace(await One_line_regex(CleanRegex2(), a, cancellationToken, 0), "", StringComparison.OrdinalIgnoreCase).Replace("  2", ":secondseason", StringComparison.OrdinalIgnoreCase) == b)
+                {
                     return true;
+                }
             }
             catch (Exception)
             {
@@ -293,7 +388,7 @@ namespace Jellyfin.Plugin.AniList.Providers
         /// <param name="input"></param>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        private async static Task<string> Convert_symbols_too_numbers(string input, string symbol, CancellationToken cancellationToken)
+        private static async Task<string> Convert_symbols_too_numbers(string input, string symbol, CancellationToken cancellationToken)
         {
             try
             {
@@ -307,6 +402,7 @@ namespace Jellyfin.Plugin.AniList.Providers
                         highest_number = regex_c.Count();
                     x++;
                 }
+
                 x = 0;
                 string output = "";
                 while (x != highest_number)
@@ -314,78 +410,18 @@ namespace Jellyfin.Plugin.AniList.Providers
                     output = output + symbol;
                     x++;
                 }
-                output = input.Replace(output, highest_number.ToString());
+
+                output = input.Replace(output, highest_number.ToString(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase);
                 if (string.IsNullOrEmpty(output))
                 {
                     output = input;
                 }
+
                 return output;
             }
             catch (Exception)
             {
                 return input;
-            }
-        }
-
-        /// <summary>
-        /// Simple Compare a XElemtent with a string
-        /// </summary>
-        /// <param name="a_"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
-        private async static Task<bool> Simple_compare(IEnumerable<XElement> a_, string b, CancellationToken cancellationToken)
-        {
-            bool ignore_date = true;
-            string a_date = "";
-            string b_date = "";
-
-            string b_date_ = await One_line_regex(new Regex(@"([0-9][0-9][0-9][0-9])"), b, cancellationToken);
-            if (!string.IsNullOrEmpty(b_date_))
-            {
-                b_date = b_date_;
-            }
-            if (!string.IsNullOrEmpty(b_date))
-            {
-                foreach (XElement a in a_)
-                {
-                    if (ignore_date)
-                    {
-                        string a_date_ = await One_line_regex(new Regex(@"([0-9][0-9][0-9][0-9])"), a.Value, cancellationToken);
-                        if (!string.IsNullOrEmpty(a_date_))
-                        {
-                            a_date = a_date_;
-                            ignore_date = false;
-                        }
-                    }
-                }
-            }
-            if (!ignore_date)
-            {
-                if (a_date.Trim()==b_date.Trim())
-                {
-                    foreach (XElement a in a_)
-                    {
-                            if (await Simple_compare(a.Value, b, cancellationToken, true))
-                                return true;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-                return false;
-            }
-            else
-            {
-                foreach (XElement a in a_)
-                {
-                    if (ignore_date)
-                    {
-                        if (await Simple_compare(a.Value, b, cancellationToken, true))
-                            return true;
-                    }
-                }
-                return false;
             }
         }
     }

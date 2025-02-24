@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Entities.Movies;
@@ -29,7 +25,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
-            return new[] { ImageType.Primary, ImageType.Backdrop };
+            return [ImageType.Primary, ImageType.Backdrop];
         }
 
         public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
@@ -45,9 +41,9 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             if (!string.IsNullOrEmpty(aid))
             {
                 Media media = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
-                if (media != null)
+                if (media is not null)
                 {
-                    if (media.GetImageUrl() != null)
+                    if (media.GetImageUrl() is not null)
                     {
                         list.Add(new RemoteImageInfo
                         {
@@ -57,7 +53,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                         });
                     }
 
-                    if (media.bannerImage != null)
+                    if (media.bannerImage is not null)
                     {
                         list.Add(new RemoteImageInfo
                         {
@@ -74,7 +70,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             var httpClient = Plugin.Instance.GetHttpClient();
-            return await httpClient.GetAsync(url).ConfigureAwait(false);
+            return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }
 }

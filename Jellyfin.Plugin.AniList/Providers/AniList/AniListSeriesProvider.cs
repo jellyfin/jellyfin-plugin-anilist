@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
-using MediaBrowser.Common.Configuration;
-using MediaBrowser.Common.Net;
-using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Providers;
-using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
-using MediaBrowser.Model.Serialization;
 using Microsoft.Extensions.Logging;
 using Jellyfin.Plugin.AniList.Configuration;
+using System.Globalization;
 
-//API v2
+// API v2
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     public class AniListSeriesProvider : IRemoteMetadataProvider<Series, SeriesInfo>, IHasOrder
@@ -46,32 +40,38 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             {
                 var searchName = info.Name;
                 MediaSearchResult msr;
-                if(config.UseAnitomyLibrary)
-                { //Use Anitomy to extract the title
+                if (config.UseAnitomyLibrary)
+                {
+                    // Use Anitomy to extract the title
                     searchName = Anitomy.AnitomyHelper.ExtractAnimeTitle(searchName);
-                    //todo Add episode/season?
+                    // TODO: Add episode/season?
                     searchName = AnilistSearchHelper.PreprocessTitle(searchName);
+
                     _log.LogInformation("Start AniList... Searching({Name})", searchName);
-                     msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken).ConfigureAwait(false);
-                    if (msr != null)
+
+                    msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken).ConfigureAwait(false);
+                    if (msr is not null)
                     {
-                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken).ConfigureAwait(false);
+                        media = await _aniListApi.GetAnime(msr.id.ToString(CultureInfo.InvariantCulture), cancellationToken).ConfigureAwait(false);
                     }
                 }
-                if(!config.UseAnitomyLibrary || media == null)
+
+                if (!config.UseAnitomyLibrary || media is null)
                 {
                     searchName = info.Name;
                     searchName = AnilistSearchHelper.PreprocessTitle(searchName);
+
                     _log.LogInformation("Start AniList... Searching({Name})", searchName);
+
                     msr = await _aniListApi.Search_GetSeries(searchName, cancellationToken).ConfigureAwait(false);
-                    if (msr != null)
+                    if (msr is not null)
                     {
-                        media = await _aniListApi.GetAnime(msr.id.ToString(), cancellationToken).ConfigureAwait(false);
+                        media = await _aniListApi.GetAnime(msr.id.ToString(CultureInfo.InvariantCulture), cancellationToken).ConfigureAwait(false);
                     }
                 }
             }
 
-            if (media != null)
+            if (media is not null)
             {
                 result.HasMetadata = true;
                 result.Item = media.ToSeries();
@@ -90,7 +90,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             if (!string.IsNullOrEmpty(aid))
             {
                 Media aid_result = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
-                if (aid_result != null)
+                if (aid_result is not null)
                 {
                     results.Add(aid_result.ToSearchResult());
                 }
@@ -111,7 +111,8 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             var httpClient = Plugin.Instance.GetHttpClient();
-            return await httpClient.GetAsync(url).ConfigureAwait(false);
+
+            return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }
 }

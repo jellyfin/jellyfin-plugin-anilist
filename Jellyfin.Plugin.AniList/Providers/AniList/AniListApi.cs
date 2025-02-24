@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -8,7 +8,6 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Extensions;
-using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
@@ -258,15 +257,15 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public async Task<string> FindSeries(string title, CancellationToken cancellationToken)
         {
             MediaSearchResult result = await Search_GetSeries(title, cancellationToken);
-            if (result != null)
+            if (result is not null)
             {
-                return result.id.ToString();
+                return result.id.ToString(CultureInfo.InvariantCulture);
             }
 
             result = await Search_GetSeries(await Equals_check.Clear_name(title, cancellationToken), cancellationToken).ConfigureAwait(false);
-            if (result != null)
+            if (result is not null)
             {
-                return result.id.ToString();
+                return result.id.ToString(CultureInfo.InvariantCulture);
             }
 
             return null;
@@ -277,7 +276,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             RootObject result = await WebRequestAPI(
                 new GraphQlRequest {
                     Query = GetStaffGraphqlQuery,
-                    Variables = new Dictionary<string, string> {{"id", id.ToString()}},
+                    Variables = new Dictionary<string, string> {{"id", id.ToString(CultureInfo.InvariantCulture)}},
                 },
                 cancellationToken
             ).ConfigureAwait(false);
@@ -310,6 +309,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             using HttpContent content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
             using var response = await httpClient.PostAsync(BaseApiUrl, content, cancellationToken).ConfigureAwait(false);
             using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+
             return await JsonSerializer.DeserializeAsync<RootObject>(responseStream, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
