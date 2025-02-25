@@ -10,7 +10,7 @@ namespace Jellyfin.Plugin.AniList
             if (dict.TryGetValue(key, out value))
                 return value;
 
-            return default(T);
+            return default;
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     public class AniListPersonImageProvider : IRemoteImageProvider
     {
-        private readonly ImageType[] supportedTypes = { ImageType.Primary };
+        private readonly ImageType[] supportedTypes = [ImageType.Primary];
         private readonly AniListApi _aniListApi;
 
         public AniListPersonImageProvider()
@@ -37,7 +36,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             }
 
             Staff staff = await _aniListApi.GetStaff(id, cancellationToken).ConfigureAwait(false);
-            if (staff == null)
+            if (staff is null)
             {
                 return results;
             }

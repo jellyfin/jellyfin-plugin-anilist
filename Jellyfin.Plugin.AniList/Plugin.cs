@@ -8,6 +8,7 @@ using MediaBrowser.Common.Plugins;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
+using System.Globalization;
 
 namespace Jellyfin.Plugin.AniList
 {
@@ -26,8 +27,7 @@ namespace Jellyfin.Plugin.AniList
 
         public HttpClient GetHttpClient() {
             var httpClient = _httpClientFactory.CreateClient(NamedClient.Default);
-            httpClient.DefaultRequestHeaders.UserAgent.Add(
-                new ProductInfoHeaderValue(Name, Version.ToString()));
+            httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(Name, Version.ToString()));
 
             return httpClient;
         }
@@ -43,14 +43,14 @@ namespace Jellyfin.Plugin.AniList
         /// <inheritdoc />
         public IEnumerable<PluginPageInfo> GetPages()
         {
-            return new[]
-            {
+            return
+            [
                 new PluginPageInfo
                 {
                     Name = Name,
-                    EmbeddedResourcePath = string.Format("{0}.Configuration.configPage.html", GetType().Namespace)
+                    EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace)
                 }
-            };
+            ];
         }
     }
 }
