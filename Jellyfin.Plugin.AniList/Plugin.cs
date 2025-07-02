@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using Jellyfin.Plugin.AniList.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
-using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 using System.Globalization;
@@ -14,22 +11,12 @@ namespace Jellyfin.Plugin.AniList
 {
     public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
     {
-        IHttpClientFactory _httpClientFactory;
         public Plugin(
             IApplicationPaths applicationPaths,
-            IXmlSerializer xmlSerializer,
-            IHttpClientFactory httpClientFactory)
+            IXmlSerializer xmlSerializer)
             : base(applicationPaths, xmlSerializer)
         {
             Instance = this;
-            _httpClientFactory = httpClientFactory;
-        }
-
-        public HttpClient GetHttpClient() {
-            var httpClient = _httpClientFactory.CreateClient(NamedClient.Default);
-            httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(Name, Version.ToString()));
-
-            return httpClient;
         }
 
         /// <inheritdoc />

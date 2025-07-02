@@ -48,7 +48,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             MaxGenres = 5;
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
             StudioFilterPreference = StudioFilterType.All;
-            AniDbRateLimit = 2000;
+            ApiRateLimit = 30;
             AniDbReplaceGraves = true;
             AniListShowSpoilerTags = true;
             UseAnitomyLibrary = false;
@@ -68,7 +68,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
 
         public AnimeDefaultGenreType AnimeDefaultGenre { get; set; }
 
-        public int AniDbRateLimit { get; set; }
+        public int ApiRateLimit { get; set; }
 
         public bool AniDbReplaceGraves { get; set; }
 
