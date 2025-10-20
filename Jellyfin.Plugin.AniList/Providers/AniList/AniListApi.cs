@@ -89,6 +89,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 tags {
                   id
                   name
+                  rank
                   category
                   isMediaSpoiler
                 }

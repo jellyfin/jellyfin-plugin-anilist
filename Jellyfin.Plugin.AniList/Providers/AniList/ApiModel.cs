@@ -234,7 +234,18 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public List<string> GetTagNames()
         {
             PluginConfiguration config = Plugin.Instance.Configuration;
-            return (from tag in tags where config.AniListShowSpoilerTags || !tag.isMediaSpoiler select tag.name).ToList();
+
+            tags = tags.Where(o => o.rank >= config.MinTagRank).OrderBy(o => o.rank).ToList();
+            if (config.AniListShowSpoilerTags)
+            {
+                tags = tags.Where(o => !o.isMediaSpoiler).ToList();
+            }
+            if (config.MaxTags > 0)
+            {
+                tags = tags.Take(config.MaxTags).ToList();
+            }
+
+            return (from tag in tags select tag.name).ToList();
         }
 
         /// <summary>
@@ -444,6 +455,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public int id { get; set; }
         public string name { get; set; }
         public string description { get; set; }
+        public int rank { get; set; }
         public string category { get; set; }
         public bool isMediaSpoiler { get; set; }
     }
