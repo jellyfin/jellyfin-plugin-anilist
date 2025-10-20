@@ -1,7 +1,7 @@
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 imageUrl: "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-anilist.png"
-version: 11
+version: 12
 targetAbi: "10.11.0.0"
 framework: "net9.0"
 owner: "jellyfin"
@@ -13,7 +13,4 @@ category: "Anime"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |-
-  - Cleanup (#91) @Shadowghost
-
-  ### New features and improvements ###
-  - Added a setting to make only animation studio appear as metadata (with fixes) (#88) @sjorge
+  - Jellyfin 10.11 support (#92) @crobibero
