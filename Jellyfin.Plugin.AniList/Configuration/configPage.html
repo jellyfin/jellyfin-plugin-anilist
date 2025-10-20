@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -34,6 +34,12 @@
                                 <option id="optLanguageAll" value="All">Do not filter</option>
                             </select>
                             <div class="fieldDescription">This setting will only keep people with chosen language. Choosing Localized will retain everybody except Japanese VAs.</div>
+                        </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input id="chkAddDescription" name="chkAddDescription" type="checkbox" is="emby-checkbox" />
+                                <span>Include synopsis metadata</span>
+                            </label>
                         </div>
                         <div class="inputContainer">
                             <label class="inputLabel inputLabelUnfocused" for="chkMaxPeople">Max People</label>
@@ -105,6 +111,7 @@
                             document.getElementById('titleLanguage').value = config.TitlePreference;
                             document.getElementById('originalTitleLanguage').value = config.OriginalTitlePreference;
                             document.getElementById('filterPeopleByLanguage').value = config.PersonLanguageFilterPreference;
+                            document.getElementById('chkAddDescription').checked = config.AddDescription;
                             document.getElementById('chkMaxPeople').value = config.MaxPeople;
                             document.getElementById('chkMaxGenres').value = config.MaxGenres;
                             document.getElementById('filterStudio').value = config.StudioFilterPreference;
@@ -125,6 +132,7 @@
                             config.TitlePreference = document.getElementById('titleLanguage').value;
                             config.OriginalTitlePreference = document.getElementById('originalTitleLanguage').value;
                             config.PersonLanguageFilterPreference = document.getElementById('filterPeopleByLanguage').value;
+                            config.AddDescription = document.getElementById('chkAddDescription').checked;
                             config.MaxPeople = document.getElementById('chkMaxPeople').value;
                             config.MaxGenres = document.getElementById('chkMaxGenres').value;
                             config.StudioFilterPreference = document.getElementById('filterStudio').value;

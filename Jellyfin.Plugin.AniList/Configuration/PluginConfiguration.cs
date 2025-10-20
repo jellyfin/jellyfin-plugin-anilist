@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Model.Plugins;
+using MediaBrowser.Model.Plugins;
 
 namespace Jellyfin.Plugin.AniList.Configuration
 {
@@ -44,6 +44,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             TitlePreference = TitlePreferenceType.Localized;
             OriginalTitlePreference = TitlePreferenceType.JapaneseRomaji;
             PersonLanguageFilterPreference = LanguageFilterType.All;
+            AddDescription = true;
             MaxPeople = 0;
             MaxGenres = 5;
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
@@ -59,6 +60,8 @@ namespace Jellyfin.Plugin.AniList.Configuration
         public TitlePreferenceType OriginalTitlePreference { get; set; }
 
         public LanguageFilterType PersonLanguageFilterPreference { get; set; }
+
+        public bool AddDescription { get; set; }
 
         public int MaxPeople { get; set; }
 
