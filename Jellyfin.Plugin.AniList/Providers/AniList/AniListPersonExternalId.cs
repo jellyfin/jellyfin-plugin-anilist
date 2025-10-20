@@ -18,8 +18,5 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public ExternalIdMediaType? Type
             => ExternalIdMediaType.Person;
-
-        public string UrlFormatString
-            => "https://anilist.co/staff/{0}/";
     }
 }

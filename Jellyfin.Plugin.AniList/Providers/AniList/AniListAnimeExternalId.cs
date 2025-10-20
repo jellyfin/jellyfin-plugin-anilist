@@ -19,8 +19,5 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public ExternalIdMediaType? Type
             => ExternalIdMediaType.Series;
-
-        public string UrlFormatString
-            => "https://anilist.co/anime/{0}/";
     }
 }
