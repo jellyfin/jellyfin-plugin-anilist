@@ -1,7 +1,7 @@
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 imageUrl: "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-anilist.png"
-version: 12
+version: 13
 targetAbi: "10.11.0.0"
 framework: "net9.0"
 owner: "jellyfin"
@@ -12,5 +12,7 @@ description: >
 category: "Anime"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
-changelog: |-
-  - Jellyfin 10.11 support (#92) @crobibero
+changelog: |2-
+
+  ### Dependency updates ###
+  - Update dotnet monorepo to 9.0.10 (#98) @renovate
