@@ -14,3 +14,6 @@ artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |-
   - Jellyfin 10.11 support (#92) @crobibero
+
+  ### Dependency updates ###
+  - Update dotnet monorepo to 9.0.10 (#98) @renovate
