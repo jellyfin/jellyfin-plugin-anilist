@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -44,6 +44,16 @@
                             <label class="inputLabel inputLabelUnfocused" for="chkMaxGenres">Max Genres</label>
                             <input id="chkMaxGenres" name="chkMaxGenres" type="number" is="emby-input" min="0" />
                             <div class="fieldDescription">Set this to zero to remove any limit.</div>
+                        </div>
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="chkMaxTags">Max Tags</label>
+                            <input id="chkMaxTags" name="chkMaxTags" type="number" is="emby-input" min="0" />
+                            <div class="fieldDescription">Set this to zero to remove any limit.</div>
+                        </div>
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="chkMinTagRank">Minimum Tag Rank (out of 100)</label>
+                            <input id="chkMinTagRank" name="chkMinTagRank" type="number" is="emby-input" min="0" max="100" />
+                            <div class="fieldDescription">Only include tags with at-least this rank (relavency percentage). Set to zero to remove any limit.</div>
                         </div>
                         <div class="selectContainer">
                             <label class="selectLabel" for="filterStudio">Filter Studio Preference</label>
@@ -107,6 +117,8 @@
                             document.getElementById('filterPeopleByLanguage').value = config.PersonLanguageFilterPreference;
                             document.getElementById('chkMaxPeople').value = config.MaxPeople;
                             document.getElementById('chkMaxGenres').value = config.MaxGenres;
+                            document.getElementById('chkMaxTags').value = config.MaxTags;
+                            document.getElementById('chkMinTagRank').value = config.MinTagRank;
                             document.getElementById('filterStudio').value = config.StudioFilterPreference;
                             document.getElementById('animeDefaultGenre').value = config.AnimeDefaultGenre;
                             document.getElementById('chkAniDbRateLimit').value = config.AniDbRateLimit;
@@ -127,6 +139,8 @@
                             config.PersonLanguageFilterPreference = document.getElementById('filterPeopleByLanguage').value;
                             config.MaxPeople = document.getElementById('chkMaxPeople').value;
                             config.MaxGenres = document.getElementById('chkMaxGenres').value;
+                            config.MaxTags = document.getElementById('chkMaxTags').value;
+                            config.MinTagRank = document.getElementById('chkMinTagRank').value;
                             config.StudioFilterPreference = document.getElementById('filterStudio').value;
                             config.AnimeDefaultGenre = document.getElementById('animeDefaultGenre').value;
                             config.AniDbRateLimit = document.getElementById('chkAniDbRateLimit').value;

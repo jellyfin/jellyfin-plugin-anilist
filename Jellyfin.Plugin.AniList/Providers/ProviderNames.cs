@@ -1,4 +1,4 @@
-﻿namespace Jellyfin.Plugin.AniList.Providers
+namespace Jellyfin.Plugin.AniList.Providers
 {
     public class ProviderNames
     {

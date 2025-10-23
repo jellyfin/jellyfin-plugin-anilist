@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -89,6 +89,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 tags {
                   id
                   name
+                  rank
                   category
                   isMediaSpoiler
                 }
