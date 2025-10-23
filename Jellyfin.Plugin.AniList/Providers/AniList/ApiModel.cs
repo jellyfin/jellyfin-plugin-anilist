@@ -235,17 +235,24 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             PluginConfiguration config = Plugin.Instance.Configuration;
 
-            tags = tags.Where(o => o.rank >= config.MinTagRank).OrderBy(o => o.rank).ToList();
-            if (config.AniListShowSpoilerTags)
+            IEnumerable<Tag> filteredTags = tags?
+                .Where(tag => tag.rank >= config.MinTagRank)
+                .Where(tag => !tag.isMediaSpoiler || config.AniListShowSpoilerTags)
+                .OrderByDescending(tag => tag.rank);
+
+            if (filteredTags == null)
             {
-                tags = tags.Where(o => !o.isMediaSpoiler).ToList();
-            }
-            if (config.MaxTags > 0)
-            {
-                tags = tags.Take(config.MaxTags).ToList();
+                return new List<string>();
             }
 
-            return (from tag in tags select tag.name).ToList();
+            if (config.MaxTags > 0)
+            {
+                filteredTags = filteredTags.Take(config.MaxTags);
+            }
+
+            return filteredTags
+                .Select(tag => tag.name)
+                .ToList();
         }
 
         /// <summary>
@@ -256,20 +263,24 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             PluginConfiguration config = Plugin.Instance.Configuration;
 
+            var filteredGenres = genres ?? Enumerable.Empty<string>();
+
             if (config.AnimeDefaultGenre != AnimeDefaultGenreType.None)
             {
-                genres = genres
+                filteredGenres  = filteredGenres
                     .Except(["Animation", "Anime"])
-                    .Prepend(config.AnimeDefaultGenre.ToString())
-                    .ToList();
+                    .Prepend(config.AnimeDefaultGenre.ToString());
             }
 
             if (config.MaxGenres > 0)
             {
-                genres = genres.Take(config.MaxGenres).ToList();
+                filteredGenres = filteredGenres.Take(config.MaxGenres);
             }
 
-            return genres.OrderBy(i => i).ToList();
+
+            return filteredGenres
+                .OrderBy(g => g)
+                .ToList();
         }
 
         /// <summary>
