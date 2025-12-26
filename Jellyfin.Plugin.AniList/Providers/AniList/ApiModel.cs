@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Jellyfin.Data.Enums;
@@ -271,7 +271,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             var result = new Series {
                 Name = GetPreferredTitle(config.TitlePreference, "en"),
                 OriginalTitle = GetPreferredTitle(config.OriginalTitlePreference, "en"),
-                Overview = config.AddDescription ? description : null,
+                Overview = config.AddOverview ? description : null,
                 ProductionYear = startDate.year,
                 PremiereDate = startDate?.ToDateTime(),
                 EndDate = endDate?.ToDateTime(),
@@ -309,7 +309,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             return new Movie {
                 Name = GetPreferredTitle(config.TitlePreference, "en"),
                 OriginalTitle = GetPreferredTitle(config.OriginalTitlePreference, "en"),
-                Overview = config.AddDescription ? description : null,
+                Overview = config.AddOverview ? description : null,
                 ProductionYear = startDate.year,
                 PremiereDate = startDate?.ToDateTime(),
                 EndDate = endDate?.ToDateTime(),

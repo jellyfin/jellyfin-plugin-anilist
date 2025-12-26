@@ -44,7 +44,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             TitlePreference = TitlePreferenceType.Localized;
             OriginalTitlePreference = TitlePreferenceType.JapaneseRomaji;
             PersonLanguageFilterPreference = LanguageFilterType.All;
-            AddDescription = true;
+            AddOverview = true;
             MaxPeople = 0;
             MaxGenres = 5;
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
@@ -61,7 +61,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
 
         public LanguageFilterType PersonLanguageFilterPreference { get; set; }
 
-        public bool AddDescription { get; set; }
+        public bool AddOverview { get; set; }
 
         public int MaxPeople { get; set; }
 
