@@ -44,6 +44,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             TitlePreference = TitlePreferenceType.Localized;
             OriginalTitlePreference = TitlePreferenceType.JapaneseRomaji;
             PersonLanguageFilterPreference = LanguageFilterType.All;
+            AddOverview = true;
             MaxPeople = 0;
             MaxGenres = 5;
             MaxTags = 0;
@@ -61,6 +62,8 @@ namespace Jellyfin.Plugin.AniList.Configuration
         public TitlePreferenceType OriginalTitlePreference { get; set; }
 
         public LanguageFilterType PersonLanguageFilterPreference { get; set; }
+
+        public bool AddOverview { get; set; }
 
         public int MaxPeople { get; set; }
 
