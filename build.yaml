@@ -1,8 +1,8 @@
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 imageUrl: "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-anilist.png"
-version: 12
-targetAbi: "10.11.0.0"
+version: 13
+targetAbi: "10.11.5.0"
 framework: "net9.0"
 owner: "jellyfin"
 overview: "AniList metadata provider"
@@ -13,4 +13,8 @@ category: "Anime"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |-
-  - Jellyfin 10.11 support (#92) @crobibero
+  - Add option for including/excluding series description (synopsis) (#103) @jack-mil
+  - Filter tags by Anilist rank and Add maximum tags setting (#102) @jack-mil
+
+  ### Dependency updates ###
+  - Update dotnet monorepo to 9.0.11 (#105) @[renovate[bot]](https://github.com/apps/renovate)
