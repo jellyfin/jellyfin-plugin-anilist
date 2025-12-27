@@ -1,4 +1,4 @@
-﻿using MediaBrowser.Model.Plugins;
+using MediaBrowser.Model.Plugins;
 
 namespace Jellyfin.Plugin.AniList.Configuration
 {
@@ -46,6 +46,8 @@ namespace Jellyfin.Plugin.AniList.Configuration
             PersonLanguageFilterPreference = LanguageFilterType.All;
             MaxPeople = 0;
             MaxGenres = 5;
+            MaxTags = 0;
+            MinTagRank = 0;
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
             StudioFilterPreference = StudioFilterType.All;
             AniDbRateLimit = 2000;
@@ -63,6 +65,10 @@ namespace Jellyfin.Plugin.AniList.Configuration
         public int MaxPeople { get; set; }
 
         public int MaxGenres { get; set; }
+
+        public int MaxTags { get; set; }
+
+        public int MinTagRank { get; set; }
 
         public StudioFilterType StudioFilterPreference { get; set; }
 

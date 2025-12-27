@@ -1,4 +1,4 @@
-﻿﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Jellyfin.Data.Enums;
@@ -234,7 +234,25 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public List<string> GetTagNames()
         {
             PluginConfiguration config = Plugin.Instance.Configuration;
-            return (from tag in tags where config.AniListShowSpoilerTags || !tag.isMediaSpoiler select tag.name).ToList();
+
+            IEnumerable<Tag> filteredTags = tags?
+                .Where(tag => tag.rank >= config.MinTagRank)
+                .Where(tag => !tag.isMediaSpoiler || config.AniListShowSpoilerTags)
+                .OrderByDescending(tag => tag.rank);
+
+            if (filteredTags == null)
+            {
+                return new List<string>();
+            }
+
+            if (config.MaxTags > 0)
+            {
+                filteredTags = filteredTags.Take(config.MaxTags);
+            }
+
+            return filteredTags
+                .Select(tag => tag.name)
+                .ToList();
         }
 
         /// <summary>
@@ -245,20 +263,24 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         {
             PluginConfiguration config = Plugin.Instance.Configuration;
 
+            var filteredGenres = genres ?? Enumerable.Empty<string>();
+
             if (config.AnimeDefaultGenre != AnimeDefaultGenreType.None)
             {
-                genres = genres
+                filteredGenres  = filteredGenres
                     .Except(["Animation", "Anime"])
-                    .Prepend(config.AnimeDefaultGenre.ToString())
-                    .ToList();
+                    .Prepend(config.AnimeDefaultGenre.ToString());
             }
 
             if (config.MaxGenres > 0)
             {
-                genres = genres.Take(config.MaxGenres).ToList();
+                filteredGenres = filteredGenres.Take(config.MaxGenres);
             }
 
-            return genres.OrderBy(i => i).ToList();
+
+            return filteredGenres
+                .OrderBy(g => g)
+                .ToList();
         }
 
         /// <summary>
@@ -444,6 +466,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public int id { get; set; }
         public string name { get; set; }
         public string description { get; set; }
+        public int rank { get; set; }
         public string category { get; set; }
         public bool isMediaSpoiler { get; set; }
     }
