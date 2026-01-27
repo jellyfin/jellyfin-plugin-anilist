@@ -58,7 +58,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                         list.Add(new RemoteImageInfo
                         {
                             ProviderName = Name,
-                            Type = ImageType.Backdrop,
+                            Type = ImageType.Banner,
                             Url = media.bannerImage
                         });
                     }
