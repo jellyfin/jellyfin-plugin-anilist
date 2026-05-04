@@ -12,11 +12,13 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
     public class AniListPersonImageProvider : IRemoteImageProvider
     {
         private readonly ImageType[] supportedTypes = [ImageType.Primary];
-        private readonly AniListApi _aniListApi;
+        private readonly AniListApi aniListApi;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public AniListPersonImageProvider()
+        public AniListPersonImageProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory)
         {
-            _aniListApi = new AniListApi();
+            this.aniListApi = aniListApi;
+            this.httpClientFactory = httpClientFactory;
         }
 
         public string Name => "AniList";
@@ -35,7 +37,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                 return results;
             }
 
-            Staff staff = await _aniListApi.GetStaff(id, cancellationToken).ConfigureAwait(false);
+            Staff staff = await aniListApi.GetStaff(id, cancellationToken).ConfigureAwait(false);
             if (staff is null)
             {
                 return results;
@@ -58,7 +60,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            var httpClient = Plugin.Instance.GetHttpClient();
+            var httpClient = httpClientFactory.CreateClient();
             return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }

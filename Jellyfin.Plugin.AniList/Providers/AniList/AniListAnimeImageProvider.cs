@@ -8,15 +8,19 @@ using MediaBrowser.Controller.Entities.Movies;
 using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
+using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
     public class AniListAnimeImageProvider : IRemoteImageProvider
     {
-        private readonly AniListApi _aniListApi;
-        public AniListAnimeImageProvider()
+        private readonly AniListApi aniListApi;
+        private readonly IHttpClientFactory httpClientFactory;
+
+        public AniListAnimeImageProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory)
         {
-            _aniListApi = new AniListApi();
+            this.aniListApi = aniListApi;
+            this.httpClientFactory = httpClientFactory;
         }
 
         public string Name => "AniList";
@@ -40,7 +44,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
             if (!string.IsNullOrEmpty(aid))
             {
-                Media media = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
+                Media media = await aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
                 if (media is not null)
                 {
                     if (media.GetImageUrl() is not null)
@@ -69,7 +73,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            var httpClient = Plugin.Instance.GetHttpClient();
+            var httpClient = httpClientFactory.CreateClient();
             return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }
