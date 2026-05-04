@@ -18,7 +18,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
     /// 🛈 https://anilist.gitbook.io/anilist-apiv2-docs
     /// 🛈 THIS IS AN UNOFFICAL API INTERFACE FOR JELLYFIN
     /// </summary>
-    public class AniListApi(IHttpClientFactory httpClientFactory, ILogger<AniListApi> logger)
+    public class AniListApi
     {
         internal const string AnilistHttpClient = "AnilistHttpClient";
 
@@ -197,6 +197,15 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             }
         """;
 
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly ILogger<AniListApi> logger;
+
+        public AniListApi(IHttpClientFactory httpClientFactory, ILogger<AniListApi> logger)
+        {
+            this.httpClientFactory = httpClientFactory;
+            this.logger = logger;
+        }
+
         private class GraphQlRequest {
             [JsonPropertyName("query")]
             public string Query { get; set; }
@@ -316,7 +325,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         private async Task<RootObject> WebRequestAPI(GraphQlRequest request, CancellationToken cancellationToken)
         {
-            HttpClient httpClient = httpClientFactory.CreateClient(AnilistHttpClient);
+            var httpClient = httpClientFactory.CreateClient(AnilistHttpClient);
 
             using HttpContent payload = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
             using HttpResponseMessage response = await httpClient.PostAsync(BaseApiUrl, payload, cancellationToken).ConfigureAwait(false);

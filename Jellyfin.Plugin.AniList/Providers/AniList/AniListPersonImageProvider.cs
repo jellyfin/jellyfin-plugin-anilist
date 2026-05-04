@@ -9,9 +9,17 @@ using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    public class AniListPersonImageProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory) : IRemoteImageProvider
+    public class AniListPersonImageProvider : IRemoteImageProvider
     {
         private readonly ImageType[] supportedTypes = [ImageType.Primary];
+        private readonly AniListApi aniListApi;
+        private readonly IHttpClientFactory httpClientFactory;
+
+        public AniListPersonImageProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory)
+        {
+            this.aniListApi = aniListApi;
+            this.httpClientFactory = httpClientFactory;
+        }
 
         public string Name => "AniList";
 

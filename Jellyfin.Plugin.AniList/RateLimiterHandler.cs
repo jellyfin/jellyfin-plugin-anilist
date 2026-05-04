@@ -3,39 +3,58 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.RateLimiting;
 using System.Threading.Tasks;
+using Jellyfin.Plugin.AniList;
 
 internal class RateLimiterHandler : DelegatingHandler
 {
-    FixedWindowRateLimiter rateLimiter;
+    static RateLimiter _rateLimiter;
 
-    public RateLimiterHandler(int rateLimit, int maxConcurrency)
+    static readonly RateLimiter _burstLimiter = new SlidingWindowRateLimiter(
+        new SlidingWindowRateLimiterOptions()
+        {
+            AutoReplenishment = true,
+            PermitLimit = 4,
+            QueueLimit = 4096,
+            Window = TimeSpan.FromSeconds(1),
+            SegmentsPerWindow = 2,
+        }
+    );
+
+    public RateLimiterHandler(int rateLimit)
     {
-        this.rateLimiter = new FixedWindowRateLimiter(
-            new FixedWindowRateLimiterOptions()
+        if (_rateLimiter != null)
+        {
+            return;
+        }
+
+        lock (_burstLimiter)
+        {
+            if (_rateLimiter != null)
             {
-                AutoReplenishment = true,
-                PermitLimit = 1,
-                QueueLimit = maxConcurrency,
-                Window = TimeSpan.FromMinutes(1) / rateLimit,
+                return;
             }
-        );
+
+            _rateLimiter = new FixedWindowRateLimiter(
+                new FixedWindowRateLimiterOptions()
+                {
+                    AutoReplenishment = true,
+                    PermitLimit = Plugin.Instance.Configuration.ApiRateLimit,
+                    QueueLimit = 4096,
+                    Window = TimeSpan.FromMinutes(1),
+                }
+            );
+        }
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        using RateLimitLease lease = await this.rateLimiter.AcquireAsync(cancellationToken: cancellationToken);
+        using RateLimitLease rateLimiterLease = await _rateLimiter.AcquireAsync(cancellationToken: cancellationToken);
+        using RateLimitLease burstLimiterLease = await _burstLimiter.AcquireAsync(cancellationToken: cancellationToken);
         return await base.SendAsync(request, cancellationToken);
     }
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing)
-        {
-            if (this.rateLimiter != null)
-            {
-                this.rateLimiter.Dispose();
-            }
-        }
         base.Dispose(disposing);
     }
 }

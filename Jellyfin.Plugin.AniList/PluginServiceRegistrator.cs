@@ -20,13 +20,6 @@ public class PluginServiceRegistrator : IPluginServiceRegistrator
 
     RateLimiterHandler BuildHttpHandler(IServiceProvider serviceProvider)
     {
-        var configurationManager = serviceProvider.GetService<IServerConfigurationManager>();
-        int maxConcurrency = configurationManager.Configuration.LibraryScanFanoutConcurrency;
-        if (maxConcurrency == 0)
-        {
-            maxConcurrency = Environment.ProcessorCount;
-        }
-
-        return new RateLimiterHandler(Plugin.Instance.Configuration.ApiRateLimit, maxConcurrency);
+        return new RateLimiterHandler(Plugin.Instance.Configuration.ApiRateLimit);
     }
 }

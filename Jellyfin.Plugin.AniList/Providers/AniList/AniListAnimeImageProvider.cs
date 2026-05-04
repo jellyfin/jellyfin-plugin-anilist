@@ -12,8 +12,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    public class AniListAnimeImageProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory) : IRemoteImageProvider
+    public class AniListAnimeImageProvider : IRemoteImageProvider
     {
+        private readonly AniListApi aniListApi;
+        private readonly IHttpClientFactory httpClientFactory;
+
+        public AniListAnimeImageProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory)
+        {
+            this.aniListApi = aniListApi;
+            this.httpClientFactory = httpClientFactory;
+        }
+
         public string Name => "AniList";
 
         public bool Supports(BaseItem item) => item is Series || item is Season || item is Movie;
@@ -64,7 +73,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            HttpClient httpClient = httpClientFactory.CreateClient();
+            var httpClient = httpClientFactory.CreateClient();
             return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
         }
     }

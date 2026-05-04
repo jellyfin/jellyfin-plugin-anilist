@@ -12,8 +12,19 @@ using System.Globalization;
 //API v2
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    public class AniListMovieProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory, ILogger<AniListMovieProvider> logger) : IRemoteMetadataProvider<Movie, MovieInfo>, IHasOrder
+    public class AniListMovieProvider : IRemoteMetadataProvider<Movie, MovieInfo>, IHasOrder
     {
+        private readonly AniListApi aniListApi;
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly ILogger<AniListMovieProvider> logger;
+
+        public AniListMovieProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory, ILogger<AniListMovieProvider> logger)
+        {
+            this.aniListApi = aniListApi;
+            this.httpClientFactory = httpClientFactory;
+            this.logger = logger;
+        }
+
         public int Order => -2;
         public string Name => "AniList";
 

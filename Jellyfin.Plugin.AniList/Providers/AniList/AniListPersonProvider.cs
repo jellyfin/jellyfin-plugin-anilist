@@ -11,8 +11,17 @@ using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    public class AniListPersonProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory) : IRemoteMetadataProvider<Person, PersonLookupInfo>, IHasOrder
+    public class AniListPersonProvider : IRemoteMetadataProvider<Person, PersonLookupInfo>, IHasOrder
     {
+        private readonly AniListApi aniListApi;
+        private readonly IHttpClientFactory httpClientFactory;
+
+        public AniListPersonProvider(AniListApi aniListApi, IHttpClientFactory httpClientFactory)
+        {
+            this.aniListApi = aniListApi;
+            this.httpClientFactory = httpClientFactory;
+        }
+
         public int Order => -2;
         public string Name => "AniList";
 
