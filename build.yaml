@@ -1,7 +1,7 @@
 name: "AniList"
 guid: "1bd22884-44be-40f3-ad95-fc4a7834ba2c"
 imageUrl: "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-anilist.png"
-version: 13
+version: 14
 targetAbi: "10.11.8.0"
 framework: "net9.0"
 owner: "jellyfin"
@@ -13,9 +13,6 @@ category: "Anime"
 artifacts:
   - "Jellyfin.Plugin.AniList.dll"
 changelog: |-
-  - Implement rate limit and HTTP 429 handling (#112) @ivanjx
-  - Add option for including/excluding series description (synopsis) (#103) @jack-mil
-  - Filter tags by Anilist rank and Add maximum tags setting (#102) @jack-mil
-
-  ### Dependency updates ###
-  - Update dotnet monorepo to 9.0.11 (#105) @[renovate[bot]](https://github.com/apps/renovate)
+  - Allow filtering people by role (#110) @HansLehnert
+  - Add anilist episode provider (#104) @ivanjx
+  - Change image type for banner images from Backdrop to Banner (#109) @vodkapmp
