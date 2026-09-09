@@ -1,3 +1,4 @@
+using Jellyfin.Plugin.AniList.Providers.AniList;
 using MediaBrowser.Model.Plugins;
 
 namespace Jellyfin.Plugin.AniList.Configuration
@@ -59,7 +60,7 @@ namespace Jellyfin.Plugin.AniList.Configuration
             MinTagRank = 0;
             AnimeDefaultGenre = AnimeDefaultGenreType.Anime;
             StudioFilterPreference = StudioFilterType.All;
-            AniDbRateLimit = 30;
+            AniDbRateLimit = AniListRateLimiter.DefaultRequestsPerMinute;
             AniDbReplaceGraves = true;
             AniListShowSpoilerTags = true;
             UseAnitomyLibrary = false;
@@ -87,6 +88,12 @@ namespace Jellyfin.Plugin.AniList.Configuration
 
         public AnimeDefaultGenreType AnimeDefaultGenre { get; set; }
 
+        /// <summary>
+        /// How many requests per minute may be sent to the AniList API. AniList applies its own
+        /// allowance on top of this and the plugin never exceeds the lower of the two, so this
+        /// only serves to be more conservative than AniList asks for. Zero or less leaves the
+        /// pacing entirely to the limit AniList reports.
+        /// </summary>
         public int AniDbRateLimit { get; set; }
 
         public bool AniDbReplaceGraves { get; set; }
