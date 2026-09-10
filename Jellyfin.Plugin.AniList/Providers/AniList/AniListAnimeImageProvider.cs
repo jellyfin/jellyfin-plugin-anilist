@@ -25,7 +25,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
-            return [ImageType.Primary, ImageType.Backdrop];
+            return [ImageType.Primary, ImageType.Banner];
         }
 
         public Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)

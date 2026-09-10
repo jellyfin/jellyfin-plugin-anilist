@@ -493,8 +493,15 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public List<StudioEdge> edges { get; set; }
     }
 
+    public class GraphQlError
+    {
+        public string message { get; set; }
+        public int status { get; set; }
+    }
+
     public class RootObject
     {
         public Data data { get; set; }
+        public List<GraphQlError> errors { get; set; }
     }
 }
