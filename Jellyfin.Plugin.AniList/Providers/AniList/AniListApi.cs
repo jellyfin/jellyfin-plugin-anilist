@@ -335,7 +335,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
                 if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    var retryDelay = AniListRateLimiter.RegisterRateLimited(response);
+                    var retryDelay = AniListRateLimiter.RegisterRateLimited(response, _logger);
                     _logger.LogInformation("Rate limited by AniList API. Retrying after {RetryDelay} ms.", retryDelay.TotalMilliseconds);
                     await Task.Delay(retryDelay, cancellationToken).ConfigureAwait(false);
                     continue; // Retry one more time after the HTTP 429 delay

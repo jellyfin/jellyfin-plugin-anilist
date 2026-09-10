@@ -89,7 +89,7 @@
                         <div class="inputContainer">
                             <label class="inputLabel inputLabelUnfocused" for="chkAniListRateLimit">AniList Rate Limit</label>
                             <input id="chkAniListRateLimit" name="chkAniListRateLimit" type="number" is="emby-input" min="0" />
-                            <div class="fieldDescription">Requests per minute. AniList currently allows 30, and the plugin never exceeds whatever AniList reports, so lower this only to be more conservative. 0 leaves the pacing to AniList.</div>
+                            <div class="fieldDescription">Requests per minute. AniList currently allows 30, and the plugin never exceeds whatever AniList reports as its limit or as still remaining, so lower this only to be more conservative. 0 leaves the pacing to AniList.</div>
                         </div>
                         <div class="checkboxContainer checkboxContainer-withDescription">
                             <label class="emby-checkbox-label">
@@ -137,7 +137,7 @@
                             document.getElementById('chkMinTagRank').value = config.MinTagRank;
                             document.getElementById('filterStudio').value = config.StudioFilterPreference;
                             document.getElementById('animeDefaultGenre').value = config.AnimeDefaultGenre;
-                            document.getElementById('chkAniDbRateLimit').value = config.AniDbRateLimit;
+                            document.getElementById('chkAniListRateLimit').value = config.AniDbRateLimit;
                             document.getElementById('chkAniDbReplaceGraves').checked = config.AniDbReplaceGraves;
                             document.getElementById('chkAniListShowSpoilerTags').checked = config.AniListShowSpoilerTags;
                             document.getElementById('chkUseAnitomyLibrary').checked = config.UseAnitomyLibrary;
@@ -161,7 +161,7 @@
                             config.MinTagRank = document.getElementById('chkMinTagRank').value;
                             config.StudioFilterPreference = document.getElementById('filterStudio').value;
                             config.AnimeDefaultGenre = document.getElementById('animeDefaultGenre').value;
-                            config.AniDbRateLimit = parseInt(document.getElementById('chkAniDbRateLimit').value, 10) || 0;
+                            config.AniDbRateLimit = parseInt(document.getElementById('chkAniListRateLimit').value, 10) || 0;
                             config.AniDbReplaceGraves = document.getElementById('chkAniDbReplaceGraves').checked;
                             config.AniListShowSpoilerTags = document.getElementById('chkAniListShowSpoilerTags').checked;
                             config.UseAnitomyLibrary = document.getElementById('chkUseAnitomyLibrary').checked;
