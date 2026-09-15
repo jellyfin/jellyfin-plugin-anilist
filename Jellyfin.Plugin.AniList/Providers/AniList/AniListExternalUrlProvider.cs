@@ -24,6 +24,9 @@ public class AniListExternalUrlProvider : IExternalUrlProvider
                 case Movie:
                     yield return $"https://anilist.co/anime/{externalId}/";
                     break;
+                case Book:
+                    yield return $"https://anilist.co/manga/{externalId}/";
+                    break;
                 case Person:
                     yield return $"https://anilist.co/staff/{externalId}/";
                     break;

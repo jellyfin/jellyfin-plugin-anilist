@@ -9,6 +9,7 @@ using MediaBrowser.Controller.Entities.TV;
 using MediaBrowser.Controller.Entities.Movies;
 using Jellyfin.Plugin.AniList.Configuration;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
@@ -63,6 +64,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
     public class MediaSearchResult
     {
         public int id { get; set; }
+        public MediaFormat format { get; set; }
         public Title title { get; set; }
         public FuzzyDate startDate { get; set; }
         public CoverImage coverImage { get; set; }
@@ -121,6 +123,40 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         }
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum MediaType
+    {
+        [JsonStringEnumMemberName("ANIME")]
+        Anime,
+        [JsonStringEnumMemberName("MANGA")]
+        Manga,
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum MediaFormat
+    {
+        [JsonStringEnumMemberName("TV")]
+        Tv,
+        [JsonStringEnumMemberName("TV_SHORT")]
+        TvShort,
+        [JsonStringEnumMemberName("MOVIE")]
+        Movie,
+        [JsonStringEnumMemberName("SPECIAL")]
+        Special,
+        [JsonStringEnumMemberName("OVA")]
+        Ova,
+        [JsonStringEnumMemberName("ONA")]
+        Ona,
+        [JsonStringEnumMemberName("MUSIC")]
+        Music,
+        [JsonStringEnumMemberName("MANGA")]
+        Manga,
+        [JsonStringEnumMemberName("NOVEL")]
+        Novel,
+        [JsonStringEnumMemberName("ONE_SHOT")]
+        OneShot,
+    }
+
     public class Media : MediaSearchResult
     {
         public int? averageScore { get; set; }
@@ -131,7 +167,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public int? duration { get; set; }
         public FuzzyDate endDate { get; set; }
         public int? episodes { get; set; }
-        public string format { get; set; }
         public List<string> genres { get; set; }
         public object hashtag { get; set; }
         public bool isAdult { get; set; }
@@ -144,16 +179,16 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         public StudioConnection studios { get; set; }
         public List<object> synonyms { get; set; }
         public List<Tag> tags { get; set; }
-        public string type { get; set; }
+        public MediaType type { get; set; }
         public object volumes { get; set; }
 
         /// <summary>
         /// Get the rating, normalized to 1-10
         /// </summary>
         /// <returns></returns>
-        public float GetRating()
+        public float? GetRating()
         {
-            return (averageScore ?? 0) / 10f;
+            return averageScore / 10f;
         }
 
         /// <summary>
@@ -213,12 +248,13 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
                         }
                     }
 
-                    PeopleHelper.AddPerson(lpi, new PersonInfo {
+                    PeopleHelper.AddPerson(lpi, new PersonInfo
+                    {
                         Name = va.name.full,
                         ImageUrl = va.image.GetBestImage(),
                         Role = edge.node.name.full,
                         Type = PersonKind.Actor,
-                        ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, va.id.ToString(CultureInfo.InvariantCulture)}},
+                        ProviderIds = new Dictionary<string, string>() { { ProviderNames.AniList, va.id.ToString(CultureInfo.InvariantCulture) } },
                     });
                 }
             }
@@ -271,7 +307,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
             if (config.AnimeDefaultGenre != AnimeDefaultGenreType.None)
             {
-                filteredGenres  = filteredGenres
+                filteredGenres = filteredGenres
                     .Except(["Animation", "Anime"])
                     .Prepend(config.AnimeDefaultGenre.ToString());
             }
@@ -285,66 +321,6 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             return filteredGenres
                 .OrderBy(g => g)
                 .ToList();
-        }
-
-        /// <summary>
-        /// Convert a Media object to a Series
-        /// </summary>
-        /// <returns></returns>
-        public Series ToSeries()
-        {
-            PluginConfiguration config = Plugin.Instance.Configuration;
-            var result = new Series {
-                Name = GetPreferredTitle(config.TitlePreference, "en"),
-                OriginalTitle = GetPreferredTitle(config.OriginalTitlePreference, "en"),
-                Overview = config.AddOverview ? description : null,
-                ProductionYear = startDate.year,
-                PremiereDate = startDate?.ToDateTime(),
-                EndDate = endDate?.ToDateTime(),
-                CommunityRating = GetRating(),
-                RunTimeTicks = duration.HasValue ? TimeSpan.FromMinutes(duration.Value).Ticks : null,
-                Genres = GetGenres().ToArray(),
-                Tags = GetTagNames().ToArray(),
-                Studios = GetStudioNames().ToArray(),
-                ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, id.ToString(CultureInfo.InvariantCulture)}}
-            };
-
-            if (status == "FINISHED" || status == "CANCELLED")
-            {
-                result.Status = SeriesStatus.Ended;
-            }
-            else if (status == "RELEASING")
-            {
-                result.Status = SeriesStatus.Continuing;
-            }
-            else if (status == "NOT_YET_RELEASED")
-            {
-                result.Status = SeriesStatus.Unreleased;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Convert a Media object to a Movie
-        /// </summary>
-        /// <returns></returns>
-        public Movie ToMovie()
-        {
-            PluginConfiguration config = Plugin.Instance.Configuration;
-            return new Movie {
-                Name = GetPreferredTitle(config.TitlePreference, "en"),
-                OriginalTitle = GetPreferredTitle(config.OriginalTitlePreference, "en"),
-                Overview = config.AddOverview ? description : null,
-                ProductionYear = startDate.year,
-                PremiereDate = startDate?.ToDateTime(),
-                EndDate = endDate?.ToDateTime(),
-                CommunityRating = GetRating(),
-                Genres = GetGenres().ToArray(),
-                Tags = GetTagNames().ToArray(),
-                Studios = GetStudioNames().ToArray(),
-                ProviderIds = new Dictionary<string, string>() {{ProviderNames.AniList, id.ToString(CultureInfo.InvariantCulture)}}
-            };
         }
     }
     public class PageInfo
