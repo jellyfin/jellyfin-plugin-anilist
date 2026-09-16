@@ -29,11 +29,12 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         private readonly ILogger _logger;
 
-        private const string SearchAnimeGraphqlQuery = """
-            query ($query: String) {
+        private const string SearchMediaGraphqlQuery = """
+            query ($query: String, $type: MediaType) {
               Page {
-                media(search: $query, type: ANIME) {
+                media(search: $query, type: $type) {
                   id
+                  format
                   title {
                     romaji
                     english
@@ -54,9 +55,9 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
             }
         """;
 
-        private const string GetAnimeGraphqlQuery = """
+        private const string GetMediaGraphqlQuery = """
             query($id: Int!) {
-              Media(id: $id, type: ANIME) {
+              Media(id: $id) {
                 id
                 title {
                   romaji
@@ -220,11 +221,11 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<Media> GetAnime(string id, CancellationToken cancellationToken)
+        public async Task<Media> GetMedia(string id, CancellationToken cancellationToken)
         {
             RootObject result = await WebRequestAPI(
                 new GraphQlRequest {
-                    Query = GetAnimeGraphqlQuery,
+                    Query = GetMediaGraphqlQuery,
                     Variables = new Dictionary<string, string> {{"id", id}},
                 },
                 cancellationToken
@@ -234,55 +235,31 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         }
 
         /// <summary>
-        /// API call to search a title and return the first result
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<MediaSearchResult> Search_GetSeries(string title, CancellationToken cancellationToken)
-        {
-            return (await Search_GetSeries_list(title, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
-        }
-
-        /// <summary>
         /// API call to search a title and return a list of results
         /// </summary>
         /// <param name="title"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<List<MediaSearchResult>> Search_GetSeries_list(string title, CancellationToken cancellationToken)
+        public async Task<List<MediaSearchResult>> SearchMedia(string title, MediaType mediaType, CancellationToken cancellationToken)
         {
+            string mediaTypeString = mediaType switch
+            {
+                MediaType.Anime => "ANIME",
+                MediaType.Manga => "MANGA",
+                _ => throw new ArgumentException("invalid media type value"),
+            };
+
+            _logger.LogInformation("Searching mediaType: {0} query: {1}", mediaTypeString, title);
+
             RootObject result = await WebRequestAPI(
                 new GraphQlRequest {
-                    Query = SearchAnimeGraphqlQuery,
-                    Variables = new Dictionary<string, string> {{"query", title}},
+                    Query = SearchMediaGraphqlQuery,
+                    Variables = new Dictionary<string, string> {{"query", title}, {"type", mediaTypeString}},
                 },
                 cancellationToken
             ).ConfigureAwait(false);
 
             return result?.data?.Page?.media ?? [];
-        }
-
-        /// <summary>
-        /// Search for anime with the given title. Attempts to fuzzy search by removing special characters
-        /// </summary>
-        /// <param name="title"></param>
-        /// <returns></returns>
-        public async Task<string> FindSeries(string title, CancellationToken cancellationToken)
-        {
-            MediaSearchResult result = await Search_GetSeries(title, cancellationToken);
-            if (result is not null)
-            {
-                return result.id.ToString(CultureInfo.InvariantCulture);
-            }
-
-            result = await Search_GetSeries(await Equals_check.Clear_name(title, cancellationToken), cancellationToken).ConfigureAwait(false);
-            if (result is not null)
-            {
-                return result.id.ToString(CultureInfo.InvariantCulture);
-            }
-
-            return null;
         }
 
         public async Task<Staff> GetStaff(int id, CancellationToken cancellationToken)

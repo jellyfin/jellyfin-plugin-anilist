@@ -11,17 +11,17 @@ using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.AniList.Providers.AniList
 {
-    public class AniListAnimeImageProvider : IRemoteImageProvider
+    public class AniListMediaImageProvider : IRemoteImageProvider
     {
         private readonly AniListApi _aniListApi;
-        public AniListAnimeImageProvider()
+        public AniListMediaImageProvider()
         {
             _aniListApi = new AniListApi();
         }
 
         public string Name => "AniList";
 
-        public bool Supports(BaseItem item) => item is Series || item is Season || item is Movie;
+        public bool Supports(BaseItem item) => item is Series || item is Season || item is Movie || item is Book;
 
         public IEnumerable<ImageType> GetSupportedImages(BaseItem item)
         {
@@ -40,7 +40,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
             if (!string.IsNullOrEmpty(aid))
             {
-                Media media = await _aniListApi.GetAnime(aid, cancellationToken).ConfigureAwait(false);
+                Media media = await _aniListApi.GetMedia(aid, cancellationToken).ConfigureAwait(false);
                 if (media is not null)
                 {
                     if (media.GetImageUrl() is not null)

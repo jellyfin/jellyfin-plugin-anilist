@@ -15,7 +15,7 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
 
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
-            var provider = new AniListAnimeImageProvider();
+            var provider = new AniListMediaImageProvider();
             return await provider.GetImageResponse(url, cancellationToken);
         }
 
