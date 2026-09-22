@@ -27,5 +27,10 @@ namespace Jellyfin.Plugin.AniList.Anitomy
             var elements = AnitomySharp.AnitomySharp.Parse(path);
             return elements.FirstOrDefault(p => p.Category == Element.ElementCategory.ElementAnimeSeason).Value;
         }
+        public static string ExtractAnimeYear(string path)
+        {
+            var elements = AnitomySharp.AnitomySharp.Parse(path);
+            return elements.FirstOrDefault(p => p.Category == Element.ElementCategory.ElementAnimeYear)?.Value;
+        }
     }
 }

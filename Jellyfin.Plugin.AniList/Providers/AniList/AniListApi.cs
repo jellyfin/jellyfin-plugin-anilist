@@ -234,14 +234,26 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         }
 
         /// <summary>
-        /// API call to search a title and return the first result
+        /// API call to search a title and return the first result that matches the given year, or the first result if no match is found
         /// </summary>
         /// <param name="title"></param>
+        /// <param name="year"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<MediaSearchResult> Search_GetSeries(string title, CancellationToken cancellationToken)
+        public async Task<MediaSearchResult> Search_GetSeries(string title, int? year, CancellationToken cancellationToken)
         {
-            return (await Search_GetSeries_list(title, cancellationToken).ConfigureAwait(false)).FirstOrDefault();
+          var medias = await Search_GetSeries_list(title, cancellationToken).ConfigureAwait(false);
+
+          if (year is null)
+              return medias.FirstOrDefault();
+
+          foreach (MediaSearchResult media in medias)
+          {
+            if (media.startDate.year == year)
+              return media;
+          }
+
+          return medias.FirstOrDefault();
         }
 
         /// <summary>
@@ -270,13 +282,13 @@ namespace Jellyfin.Plugin.AniList.Providers.AniList
         /// <returns></returns>
         public async Task<string> FindSeries(string title, CancellationToken cancellationToken)
         {
-            MediaSearchResult result = await Search_GetSeries(title, cancellationToken);
+            MediaSearchResult result = await Search_GetSeries(title, null, cancellationToken);
             if (result is not null)
             {
                 return result.id.ToString(CultureInfo.InvariantCulture);
             }
 
-            result = await Search_GetSeries(await Equals_check.Clear_name(title, cancellationToken), cancellationToken).ConfigureAwait(false);
+            result = await Search_GetSeries(await Equals_check.Clear_name(title, cancellationToken), null, cancellationToken).ConfigureAwait(false);
             if (result is not null)
             {
                 return result.id.ToString(CultureInfo.InvariantCulture);
